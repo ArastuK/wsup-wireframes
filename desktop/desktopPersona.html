@@ -98,7 +98,7 @@
         .main-content {
             flex: 1;
             margin-left: 340px;
-            margin-right: 340px;
+            margin-right: 380px;
             padding: 80px 24px 16px;
             min-width: 0;
         }
@@ -108,7 +108,7 @@
             position: fixed;
             top: 0;
             left: 340px;
-            right: 340px;
+            right: 380px;
             height: 64px;
             background: #1a1a1a;
             display: flex;
@@ -453,13 +453,13 @@
             position: fixed;
             right: 0;
             top: 0;
-            width: 340px;
+            width: 380px;
             height: 100vh;
             background: #1e1e1e;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 64px;
+            padding: 64px 32px 0;
             text-align: center;
         }
 
@@ -525,8 +525,466 @@
         .edit-profile-btn i {
             font-size: 18px;
         }
+
+        /* Right Panel Styles */
+        .active-persona {
+            background: rgba(124, 92, 255, 0.1);
+            border: 1px solid rgba(124, 92, 255, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .active-persona:hover {
+            background: rgba(124, 92, 255, 0.15);
+            border-color: rgba(124, 92, 255, 0.4);
+        }
+
+        .persona-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .persona-label {
+            font-size: 12px;
+            color: #7c5cff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .persona-status {
+            width: 8px;
+            height: 8px;
+            background: #7c5cff;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(124, 92, 255, 0.7);
+            }
+            
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 6px rgba(124, 92, 255, 0);
+            }
+            
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(124, 92, 255, 0);
+            }
+        }
+
+        .persona-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .persona-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #7c5cff;
+        }
+
+        .persona-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .persona-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .persona-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .persona-description {
+            font-size: 12px;
+            color: #888;
+            line-height: 1.4;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            white-space: normal;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #1e1e1e;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            background: #1e1e1e;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .modal-title-section {
+            margin-right: 24px;
+            flex: 1;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .modal-description {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.4;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 24px;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .modal-close:hover {
+            color: #fff;
+        }
+
+        .modal-tabs {
+            display: flex;
+            padding: 0 24px;
+            border-bottom: 1px solid #333;
+            background: #1e1e1e;
+            position: sticky;
+            top: 73px;
+            z-index: 1;
+        }
+
+        .modal-tab {
+            padding: 16px 24px;
+            color: #888;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+        }
+
+        .modal-tab.active {
+            color: #7c5cff;
+            border-bottom-color: #7c5cff;
+        }
+
+        .modal-content {
+            padding: 24px;
+        }
+
+        .personas-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .persona-card {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .persona-card:hover {
+            background: #333;
+        }
+
+        .persona-card.active {
+            border-color: #7c5cff;
+            background: rgba(124, 92, 255, 0.1);
+        }
+
+        .create-persona-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .form-input {
+            background: #2a2a2a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 12px;
+            color: #fff;
+            font-size: 14px;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: #7c5cff;
+            outline: none;
+        }
+
+        .form-input::placeholder {
+            color: #666;
+        }
+
+        textarea.form-input {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .avatar-upload {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .avatar-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #2a2a2a;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-actions {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .avatar-btn {
+            background: #2a2a2a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 12px;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .avatar-btn:hover {
+            background: #333;
+        }
+
+        .avatar-btn i {
+            font-size: 16px;
+        }
+
+        .form-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #7c5cff;
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #6a4ee6;
+        }
+
+        .btn-secondary {
+            background: #2a2a2a;
+            color: white;
+            border: 1px solid #333;
+        }
+
+        .btn-secondary:hover {
+            background: #333;
+        }
+
+        .character-limit {
+            font-size: 12px;
+            color: #666;
+            text-align: right;
+            margin-top: 4px;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Modal Elements
+            const modalOverlay = document.getElementById('personaModal');
+            const modalClose = modalOverlay.querySelector('.modal-close');
+            const modalTabs = modalOverlay.querySelectorAll('.modal-tab');
+            const personasList = modalOverlay.querySelector('.personas-list');
+            const createPersonaForm = modalOverlay.querySelector('.create-persona-form');
+            const cancelButton = createPersonaForm.querySelector('.btn-secondary');
+            
+            // Active Persona Element
+            const activePersona = document.querySelector('.active-persona');
+
+            // Open modal when clicking on active persona
+            activePersona.addEventListener('click', function() {
+                modalOverlay.classList.add('active');
+            });
+
+            // Close modal
+            modalClose.addEventListener('click', function() {
+                modalOverlay.classList.remove('active');
+            });
+
+            // Close modal when clicking outside
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modalOverlay) {
+                    modalOverlay.classList.remove('active');
+                }
+            });
+
+            // Tab switching
+            modalTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Update active tab
+                    modalTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Show/hide content based on tab
+                    if (this.textContent === 'My Personas') {
+                        personasList.style.display = 'grid';
+                        createPersonaForm.style.display = 'none';
+                    } else {
+                        personasList.style.display = 'none';
+                        createPersonaForm.style.display = 'flex';
+                    }
+                });
+            });
+
+            // Cancel button in create form
+            cancelButton.addEventListener('click', function() {
+                // Switch back to My Personas tab
+                modalTabs[0].click();
+            });
+
+            // Character counter for Information field
+            const infoTextarea = createPersonaForm.querySelector('textarea:last-of-type');
+            const charCounter = createPersonaForm.querySelector('.character-limit');
+
+            infoTextarea.addEventListener('input', function() {
+                const remaining = 2000 - this.value.length;
+                charCounter.textContent = `${this.value.length}/2000 characters`;
+                
+                if (remaining < 0) {
+                    charCounter.style.color = '#ff4444';
+                } else {
+                    charCounter.style.color = '#666';
+                }
+            });
+
+            // Handle persona selection
+            const personaCards = personasList.querySelectorAll('.persona-card');
+            personaCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Update active state in modal
+                    personaCards.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Update active persona in sidebar
+                    const personaContent = this.querySelector('.persona-content').cloneNode(true);
+                    const activePersonaContent = activePersona.querySelector('.persona-content');
+                    activePersonaContent.replaceWith(personaContent);
+
+                    // Close modal
+                    modalOverlay.classList.remove('active');
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="app-container">
@@ -790,10 +1248,124 @@
                 <span class="profile-tag">Male</span>
             </div>
             <p class="profile-bio">Henlo there! 🐕</p>
+            
+            <!-- Active Persona -->
+            <div class="active-persona">
+                <div class="persona-header">
+                    <div class="persona-status"></div>
+                    <span class="persona-label">
+                        <i class="fas fa-theater-masks" style="margin-right: 6px;"></i>
+                        Active Persona
+                    </span>
+                </div>
+                <div class="persona-content">
+                    <div class="persona-avatar">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Detective" alt="Detective">
+                    </div>
+                    <div class="persona-info">
+                        <div class="persona-name">Detective Holmes</div>
+                        <div class="persona-description">A brilliant detective with exceptional deductive skills</div>
+                    </div>
+                </div>
+            </div>
+
             <button class="edit-profile-btn">
                 <i class="fas fa-pen"></i>
                 Edit profile
             </button>
+        </div>
+    </div>
+
+    <!-- Persona Modal -->
+    <div class="modal-overlay" id="personaModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title-section">
+                    <div class="modal-title">
+                        <i class="fas fa-theater-masks" style="margin-right: 8px; color: #7c5cff;"></i>
+                        Manage Personas
+                    </div>
+                    <div class="modal-description">Take on different identities while chatting with AI characters. Your active persona shapes how characters interact with you.</div>
+                </div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-tabs">
+                <div class="modal-tab active">My Personas</div>
+                <div class="modal-tab">Create New</div>
+            </div>
+            <div class="modal-content">
+                <!-- My Personas Tab -->
+                <div class="personas-list">
+                    <div class="persona-card active">
+                        <div class="persona-content">
+                            <div class="persona-avatar">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Detective" alt="Detective">
+                            </div>
+                            <div class="persona-info">
+                                <div class="persona-name">Detective Holmes</div>
+                                <div class="persona-description">A brilliant detective with exceptional deductive skills</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="persona-card">
+                        <div class="persona-content">
+                            <div class="persona-avatar">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Warrior" alt="Warrior">
+                            </div>
+                            <div class="persona-info">
+                                <div class="persona-name">Captain Zephyr</div>
+                                <div class="persona-description">A seasoned warrior from the northern kingdoms</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Create New Persona Tab (Initially Hidden) -->
+                <form class="create-persona-form" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-input" placeholder="e.g., Captain Zephyr, Lady Aria of the Vale, ShadowFox99">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Avatar</label>
+                        <div class="avatar-upload">
+                            <div class="avatar-preview">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=New" alt="New Persona">
+                            </div>
+                            <div class="avatar-actions">
+                                <button type="button" class="avatar-btn">
+                                    <i class="fas fa-upload"></i>
+                                    Upload Image
+                                </button>
+                                <button type="button" class="avatar-btn">
+                                    <i class="fas fa-wand-magic-sparkles"></i>
+                                    Generate Avatar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Appearance (for Generate Avatar)</label>
+                        <textarea class="form-input" placeholder="e.g., A tall elf with silver hair and emerald eyes, wearing a forest cloak"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Information</label>
+                        <textarea class="form-input" placeholder="e.g., Aria is a noble from the Windvale Kingdom, known for her wisdom and telepathic abilities…"></textarea>
+                        <div class="character-limit">0/2000 characters</div>
+                    </div>
+
+                    <div class="form-footer">
+                        <button type="button" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Create Persona
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </body>
