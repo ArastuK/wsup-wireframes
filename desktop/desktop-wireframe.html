@@ -167,6 +167,14 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 32px;
+            gap: 16px;
+        }
+
+        .search-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
         }
 
         .search-bar {
@@ -196,6 +204,79 @@
 
         .search-bar input::placeholder {
             color: #666;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .icon:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .icon i {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .create-post-btn {
+            background: #7c5cff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .create-post-btn:hover {
+            background: #6a4ce6;
+        }
+
+        .profile-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+
+        .profile-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .profile-btn i {
+            font-size: 16px;
         }
 
         .header-right {
@@ -230,41 +311,6 @@
             height: 12px;
             background: #666;
             border-radius: 50%;
-        }
-
-        .header-icons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .icon {
-            width: 32px;
-            height: 32px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        .icon i {
-            color: #888;
-            font-size: 14px;
-        }
-
-        .create-post-btn {
-            background: #7c5cff;
-            color: white;
-            padding: 6px 16px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
         .featured-section {
@@ -479,6 +525,196 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #444;
         }
+
+        /* Profile Section Styles */
+        .profile-section {
+            padding: 24px 0;
+        }
+
+        .profile-header {
+            font-size: 24px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 32px;
+        }
+
+        .my-characters {
+            margin-bottom: 48px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .create-character-btn {
+            color: #7c5cff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .character-card {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 3/4;
+            background: #2a2a2a;
+        }
+
+        .character-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .character-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+        }
+
+        .character-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .character-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .my-cards {
+            margin-bottom: 48px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .card-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 3/4;
+            background: #2a2a2a;
+        }
+
+        .card-count {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .user-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-meta {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 16px;
+        }
+
+        .edit-profile-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .edit-profile-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .logout-btn {
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            margin: 32px auto;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 6px;
+            color: #888;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -511,7 +747,7 @@
             <div class="recent-chats">
                 <div class="section-label">Recent Chats</div>
                 <div class="chat-item">
-                    <div class="avatar"></div>
+                    <div class="avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=Astoria'); background-size: cover;"></div>
                     <div class="chat-content">
                         <div class="chat-name">Astoria Blackwell</div>
                         <div class="chat-preview">What's up, slave? Don't think I'm here to make...</div>
@@ -519,7 +755,7 @@
                     <div class="chat-time">3 d</div>
                 </div>
                 <div class="chat-item">
-                    <div class="avatar"></div>
+                    <div class="avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=Count'); background-size: cover;"></div>
                     <div class="chat-content">
                         <div class="chat-name">Count Dazzlewether</div>
                         <div class="chat-preview">*I scoff, adjusting my monocle with a...</div>
@@ -527,7 +763,7 @@
                     <div class="chat-time">4 d</div>
                 </div>
                 <div class="chat-item">
-                    <div class="avatar"></div>
+                    <div class="avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=Vedanshi'); background-size: cover;"></div>
                     <div class="chat-content">
                         <div class="chat-name">Vedanshi</div>
                         <div class="chat-preview">You want to know what's going on in my head...</div>
@@ -540,15 +776,17 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="header">
-                <div class="search-bar">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search">
-                </div>
-                <div class="header-right">
-                    <div class="nsfw-toggle">
-                        <span>NSFW</span>
-                        <div class="toggle"></div>
+                <div class="search-section">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search...">
                     </div>
+                    <button class="create-post-btn">
+                        <i class="fas fa-plus"></i>
+                        Create Post
+                    </button>
+                </div>
+                <div class="header-actions">
                     <div class="header-icons">
                         <div class="icon">
                             <i class="fas fa-bell"></i>
@@ -557,8 +795,8 @@
                             <i class="fas fa-envelope"></i>
                         </div>
                     </div>
-                    <button class="create-post-btn">
-                        Create Post
+                    <button class="profile-btn" onclick="window.location.href='profile.html'">
+                        <i class="fas fa-user"></i>
                     </button>
                 </div>
             </div>
@@ -567,7 +805,7 @@
                 <div class="section-title">Featured</div>
                 <div class="featured-characters">
                     <div class="featured-card">
-                        <div class="avatar"></div>
+                        <div class="avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=Junior'); background-size: cover;"></div>
                         <div class="featured-info">
                             <div class="featured-name">
                                 <h3>Junior</h3>
@@ -577,7 +815,7 @@
                         </div>
                     </div>
                     <div class="featured-card">
-                        <div class="avatar"></div>
+                        <div class="avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=mii'); background-size: cover;"></div>
                         <div class="featured-info">
                             <div class="featured-name">
                                 <h3>mii</h3>
@@ -587,7 +825,7 @@
                         </div>
                     </div>
                     <div class="featured-card">
-                        <div class="avatar"></div>
+                        <div class="avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=Aden'); background-size: cover;"></div>
                         <div class="featured-info">
                             <div class="featured-name">
                                 <h3>Aden</h3>
@@ -597,7 +835,7 @@
                         </div>
                     </div>
                     <div class="featured-card">
-                        <div class="avatar"></div>
+                        <div class="avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=KaiKam'); background-size: cover;"></div>
                         <div class="featured-info">
                             <div class="featured-name">
                                 <h3>Kai,Kam</h3>
@@ -607,7 +845,7 @@
                         </div>
                     </div>
                     <div class="featured-card">
-                        <div class="avatar"></div>
+                        <div class="avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=LeyLey'); background-size: cover;"></div>
                         <div class="featured-info">
                             <div class="featured-name">
                                 <h3>LeyLey</h3>
@@ -638,92 +876,7 @@
             <div class="character-grid">
                 <div class="character-card">
                     <div class="character-header">
-                        <div class="avatar"></div>
-                        <div class="character-info">
-                            <div class="character-name">
-                                <h3>uncle</h3>
-                                <div class="verified">✓</div>
-                            </div>
-                            <div class="character-desc">Uncle Harold is a warm-hearted, retired librarian...</div>
-                        </div>
-                    </div>
-                    <div class="character-stats">
-                        <span>#16450 Rank</span>
-                        <span>34 Chats</span>
-                    </div>
-                </div>
-
-                <div class="character-card">
-                    <div class="character-header">
-                        <div class="avatar"></div>
-                        <div class="character-info">
-                            <div class="character-name">
-                                <h3>naruto</h3>
-                                <div class="verified">✓</div>
-                            </div>
-                            <div class="character-desc">Naruto Uzumaki, a spirited male ninja...</div>
-                        </div>
-                    </div>
-                    <div class="character-stats">
-                        <span>#4498 Rank</span>
-                        <span>136 Chats</span>
-                    </div>
-                </div>
-
-                <div class="character-card">
-                    <div class="character-header">
-                        <div class="avatar"></div>
-                        <div class="character-info">
-                            <div class="character-name">
-                                <h3>Ellen</h3>
-                                <div class="verified">✓</div>
-                            </div>
-                            <div class="character-desc">Mother, happy go lucking</div>
-                        </div>
-                    </div>
-                    <div class="character-stats">
-                        <span>#7490 Rank</span>
-                        <span>79 Chats</span>
-                    </div>
-                </div>
-
-                <div class="character-card">
-                    <div class="character-header">
-                        <div class="avatar"></div>
-                        <div class="character-info">
-                            <div class="character-name">
-                                <h3>Luna</h3>
-                                <div class="verified">✓</div>
-                            </div>
-                            <div class="character-desc">The mother has died and I, her father, has to take care of her...</div>
-                        </div>
-                    </div>
-                    <div class="character-stats">
-                        <span>#7490 Rank</span>
-                        <span>79 Chats</span>
-                    </div>
-                </div>
-
-                <div class="character-card">
-                    <div class="character-header">
-                        <div class="avatar"></div>
-                        <div class="character-info">
-                            <div class="character-name">
-                                <h3>tenebris, god of the shadows</h3>
-                                <div class="verified">✓</div>
-                            </div>
-                            <div class="character-desc">shadow god</div>
-                        </div>
-                    </div>
-                    <div class="character-stats">
-                        <span>#9160 Rank</span>
-                        <span>64 Chats</span>
-                    </div>
-                </div>
-
-                <div class="character-card">
-                    <div class="character-header">
-                        <div class="avatar"></div>
+                        <div class="avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=HarryPotter'); background-size: cover;"></div>
                         <div class="character-info">
                             <div class="character-name">
                                 <h3>Harry Potter</h3>
@@ -735,6 +888,142 @@
                     <div class="character-stats">
                         <span>#5230 Rank</span>
                         <span>98 Chats</span>
+                    </div>
+                </div>
+
+                <div class="character-card">
+                    <div class="character-header">
+                        <div class="avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=uncle'); background-size: cover;"></div>
+                        <div class="character-info">
+                            <div class="character-name">
+                                <h3>Uncle Harold</h3>
+                                <div class="verified">✓</div>
+                            </div>
+                            <div class="character-desc">A warm-hearted retired librarian who loves sharing stories...</div>
+                        </div>
+                    </div>
+                    <div class="character-stats">
+                        <span>#16450 Rank</span>
+                        <span>34 Chats</span>
+                    </div>
+                </div>
+
+                <div class="character-card">
+                    <div class="character-header">
+                        <div class="avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=naruto'); background-size: cover;"></div>
+                        <div class="character-info">
+                            <div class="character-name">
+                                <h3>Naruto</h3>
+                                <div class="verified">✓</div>
+                            </div>
+                            <div class="character-desc">A spirited ninja who never gives up on his dreams...</div>
+                        </div>
+                    </div>
+                    <div class="character-stats">
+                        <span>#4498 Rank</span>
+                        <span>136 Chats</span>
+                    </div>
+                </div>
+
+                <div class="character-card">
+                    <div class="character-header">
+                        <div class="avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=Ellen'); background-size: cover;"></div>
+                        <div class="character-info">
+                            <div class="character-name">
+                                <h3>Ellen</h3>
+                                <div class="verified">✓</div>
+                            </div>
+                            <div class="character-desc">A cheerful mother with an optimistic outlook on life...</div>
+                        </div>
+                    </div>
+                    <div class="character-stats">
+                        <span>#7490 Rank</span>
+                        <span>79 Chats</span>
+                    </div>
+                </div>
+
+                <div class="character-card">
+                    <div class="character-header">
+                        <div class="avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=Luna'); background-size: cover;"></div>
+                        <div class="character-info">
+                            <div class="character-name">
+                                <h3>Luna</h3>
+                                <div class="verified">✓</div>
+                            </div>
+                            <div class="character-desc">A mysterious girl with a deep connection to the moon...</div>
+                        </div>
+                    </div>
+                    <div class="character-stats">
+                        <span>#7960 Rank</span>
+                        <span>71 Chats</span>
+                    </div>
+                </div>
+
+                <div class="character-card">
+                    <div class="character-header">
+                        <div class="avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=tenebris'); background-size: cover;"></div>
+                        <div class="character-info">
+                            <div class="character-name">
+                                <h3>Tenebris</h3>
+                                <div class="verified">✓</div>
+                            </div>
+                            <div class="character-desc">The enigmatic god of shadows, master of darkness...</div>
+                        </div>
+                    </div>
+                    <div class="character-stats">
+                        <span>#9160 Rank</span>
+                        <span>64 Chats</span>
+                    </div>
+                </div>
+
+                <div class="character-card">
+                    <div class="character-header">
+                        <div class="avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=Sherlock'); background-size: cover;"></div>
+                        <div class="character-info">
+                            <div class="character-name">
+                                <h3>Sherlock Holmes</h3>
+                                <div class="verified">✓</div>
+                            </div>
+                            <div class="character-desc">The world's greatest detective, solving mysteries with logic...</div>
+                        </div>
+                    </div>
+                    <div class="character-stats">
+                        <span>#2340 Rank</span>
+                        <span>245 Chats</span>
+                    </div>
+                </div>
+
+                <div class="character-card">
+                    <div class="character-header">
+                        <div class="avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=Sakura'); background-size: cover;"></div>
+                        <div class="character-info">
+                            <div class="character-name">
+                                <h3>Sakura</h3>
+                                <div class="verified">✓</div>
+                            </div>
+                            <div class="character-desc">A skilled medical ninja with incredible strength...</div>
+                        </div>
+                    </div>
+                    <div class="character-stats">
+                        <span>#6120 Rank</span>
+                        <span>89 Chats</span>
+                    </div>
+                </div>
+
+                <div class="character-card">
+                    <div class="character-header">
+                        <div class="avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=Professor'); background-size: cover;"></div>
+                        <div class="character-info">
+                            <div class="character-name">
+                                <h3>Professor Oak</h3>
+                                <div class="verified">✓</div>
+                            </div>
+                            <div class="character-desc">A wise Pokémon researcher guiding new trainers...</div>
+                        </div>
+                    </div>
+                    <div class="character-stats">
+                        <span>#8870 Rank</span>
+                        <span>42 Chats</span>
                     </div>
                 </div>
             </div>
