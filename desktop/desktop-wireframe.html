@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #1a1a1a;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .app-container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: #1e1e1e;
+            padding: 16px;
+            border-right: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            position: fixed;
+            height: 100vh;
+            width: 340px;
+            overflow-y: auto;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo {
+            width: 32px;
+            height: 32px;
+            background: #7c5cff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            color: white;
+            font-size: 16px;
+        }
+
+        .brand-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .nav-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            color: white;
+        }
+
+        .nav-item i {
+            font-size: 16px;
+            width: 20px;
+        }
+
+        .section-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .recent-chats {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .chat-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-item .avatar {
+            width: 32px;
+            height: 32px;
+            background: #333;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .chat-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-name {
+            font-size: 14px;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        .chat-preview {
+            font-size: 13px;
+            color: #888;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-time {
+            font-size: 12px;
+            color: #666;
+            margin-left: 8px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 340px;
+            padding: 16px 24px;
+            min-width: 0; /* Important for flex layout */
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 480px;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .search-bar i {
+            color: #666;
+            margin-right: 8px;
+            font-size: 14px;
+        }
+
+        .search-bar input {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 14px;
+            width: 100%;
+            outline: none;
+        }
+
+        .search-bar input::placeholder {
+            color: #666;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nsfw-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #888;
+        }
+
+        .toggle {
+            width: 32px;
+            height: 16px;
+            background: #333;
+            border-radius: 8px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            left: 2px;
+            top: 2px;
+            width: 12px;
+            height: 12px;
+            background: #666;
+            border-radius: 50%;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .icon i {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .create-post-btn {
+            background: #7c5cff;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .featured-section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .featured-characters {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            margin: 0 -24px;
+            padding: 0 24px;
+            width: calc(100% + 48px);
+        }
+
+        .featured-card {
+            flex: 0 0 280px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 16px;
+            border-radius: 100px;
+            cursor: pointer;
+        }
+
+        .featured-card .avatar {
+            width: 36px;
+            height: 36px;
+            background: #333;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .featured-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .featured-name {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 2px;
+        }
+
+        .featured-name h3 {
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .verified {
+            width: 16px;
+            height: 16px;
+            background: #7c5cff;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+        }
+
+        .featured-desc {
+            font-size: 13px;
+            color: #888;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
+        }
+
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+            width: 100%;
+        }
+
+        .category {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 13px;
+            color: #888;
+            cursor: pointer;
+        }
+
+        .category:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .category.active {
+            background: transparent;
+            color: white;
+            border: 1px solid #333;
+        }
+
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 16px;
+            width: 100%;
+        }
+
+        .character-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .character-header {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 0;
+        }
+
+        .character-card .avatar {
+            width: 52px;
+            height: 52px;
+            background: #333;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .character-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .character-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .character-name h3 {
+            font-size: 16px;
+            font-weight: 500;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .verified {
+            width: 16px;
+            height: 16px;
+            background: #7c5cff;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+        }
+
+        .character-desc {
+            font-size: 14px;
+            color: #888;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            white-space: normal;
+            line-height: 1.4;
+            margin-bottom: 0;
+        }
+
+        .character-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #666;
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #444;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-container">
+                <div class="logo">W</div>
+                <div class="brand-name">wsup.ai</div>
+            </div>
+            <div class="nav-section">
+                <div class="nav-item active">
+                    <i class="fas fa-home"></i>
+                    Feed
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-compass"></i>
+                    Explore
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-plus"></i>
+                    Create Character
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-pen"></i>
+                    Create Post
+                </div>
+            </div>
+            <div class="recent-chats">
+                <div class="section-label">Recent Chats</div>
+                <div class="chat-item">
+                    <div class="avatar"></div>
+                    <div class="chat-content">
+                        <div class="chat-name">Astoria Blackwell</div>
+                        <div class="chat-preview">What's up, slave? Don't think I'm here to make...</div>
+                    </div>
+                    <div class="chat-time">3 d</div>
+                </div>
+                <div class="chat-item">
+                    <div class="avatar"></div>
+                    <div class="chat-content">
+                        <div class="chat-name">Count Dazzlewether</div>
+                        <div class="chat-preview">*I scoff, adjusting my monocle with a...</div>
+                    </div>
+                    <div class="chat-time">4 d</div>
+                </div>
+                <div class="chat-item">
+                    <div class="avatar"></div>
+                    <div class="chat-content">
+                        <div class="chat-name">Vedanshi</div>
+                        <div class="chat-preview">You want to know what's going on in my head...</div>
+                    </div>
+                    <div class="chat-time">5 d</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search">
+                </div>
+                <div class="header-right">
+                    <div class="nsfw-toggle">
+                        <span>NSFW</span>
+                        <div class="toggle"></div>
+                    </div>
+                    <div class="header-icons">
+                        <div class="icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                    </div>
+                    <button class="create-post-btn">
+                        Create Post
+                    </button>
+                </div>
+            </div>
+
+            <div class="featured-section">
+                <div class="section-title">Featured</div>
+                <div class="featured-characters">
+                    <div class="featured-card">
+                        <div class="avatar"></div>
+                        <div class="featured-info">
+                            <div class="featured-name">
+                                <h3>Junior</h3>
+                                <div class="verified">✓</div>
+                            </div>
+                            <div class="featured-desc">Badass plays football quarterback don't mess...</div>
+                        </div>
+                    </div>
+                    <div class="featured-card">
+                        <div class="avatar"></div>
+                        <div class="featured-info">
+                            <div class="featured-name">
+                                <h3>mii</h3>
+                                <div class="verified">✓</div>
+                            </div>
+                            <div class="featured-desc">she was playing talkie ai</div>
+                        </div>
+                    </div>
+                    <div class="featured-card">
+                        <div class="avatar"></div>
+                        <div class="featured-info">
+                            <div class="featured-name">
+                                <h3>Aden</h3>
+                                <div class="verified">✓</div>
+                            </div>
+                            <div class="featured-desc">Aden is a bad boy who hates you...</div>
+                        </div>
+                    </div>
+                    <div class="featured-card">
+                        <div class="avatar"></div>
+                        <div class="featured-info">
+                            <div class="featured-name">
+                                <h3>Kai,Kam</h3>
+                                <div class="verified">✓</div>
+                            </div>
+                            <div class="featured-desc">Kai,she is a demon,she hates you,mean,rude...</div>
+                        </div>
+                    </div>
+                    <div class="featured-card">
+                        <div class="avatar"></div>
+                        <div class="featured-info">
+                            <div class="featured-name">
+                                <h3>LeyLey</h3>
+                                <div class="verified">✓</div>
+                            </div>
+                            <div class="featured-desc">LeyLey, an inexplics attending human sc...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="categories">
+                <div class="category active">Recommended</div>
+                <div class="category">Adventure</div>
+                <div class="category">Anime</div>
+                <div class="category">Books</div>
+                <div class="category">Boyfriend</div>
+                <div class="category">Bully</div>
+                <div class="category">Celebrities</div>
+                <div class="category">Fantasy</div>
+                <div class="category">Friend</div>
+                <div class="category">Game Characters</div>
+                <div class="category">Girlfriend</div>
+                <div class="category">History</div>
+                <div class="category">LG</div>
+            </div>
+
+            <div class="character-grid">
+                <div class="character-card">
+                    <div class="character-header">
+                        <div class="avatar"></div>
+                        <div class="character-info">
+                            <div class="character-name">
+                                <h3>uncle</h3>
+                                <div class="verified">✓</div>
+                            </div>
+                            <div class="character-desc">Uncle Harold is a warm-hearted, retired librarian...</div>
+                        </div>
+                    </div>
+                    <div class="character-stats">
+                        <span>#16450 Rank</span>
+                        <span>34 Chats</span>
+                    </div>
+                </div>
+
+                <div class="character-card">
+                    <div class="character-header">
+                        <div class="avatar"></div>
+                        <div class="character-info">
+                            <div class="character-name">
+                                <h3>naruto</h3>
+                                <div class="verified">✓</div>
+                            </div>
+                            <div class="character-desc">Naruto Uzumaki, a spirited male ninja...</div>
+                        </div>
+                    </div>
+                    <div class="character-stats">
+                        <span>#4498 Rank</span>
+                        <span>136 Chats</span>
+                    </div>
+                </div>
+
+                <div class="character-card">
+                    <div class="character-header">
+                        <div class="avatar"></div>
+                        <div class="character-info">
+                            <div class="character-name">
+                                <h3>Ellen</h3>
+                                <div class="verified">✓</div>
+                            </div>
+                            <div class="character-desc">Mother, happy go lucking</div>
+                        </div>
+                    </div>
+                    <div class="character-stats">
+                        <span>#7490 Rank</span>
+                        <span>79 Chats</span>
+                    </div>
+                </div>
+
+                <div class="character-card">
+                    <div class="character-header">
+                        <div class="avatar"></div>
+                        <div class="character-info">
+                            <div class="character-name">
+                                <h3>Luna</h3>
+                                <div class="verified">✓</div>
+                            </div>
+                            <div class="character-desc">The mother has died and I, her father, has to take care of her...</div>
+                        </div>
+                    </div>
+                    <div class="character-stats">
+                        <span>#7490 Rank</span>
+                        <span>79 Chats</span>
+                    </div>
+                </div>
+
+                <div class="character-card">
+                    <div class="character-header">
+                        <div class="avatar"></div>
+                        <div class="character-info">
+                            <div class="character-name">
+                                <h3>tenebris, god of the shadows</h3>
+                                <div class="verified">✓</div>
+                            </div>
+                            <div class="character-desc">shadow god</div>
+                        </div>
+                    </div>
+                    <div class="character-stats">
+                        <span>#9160 Rank</span>
+                        <span>64 Chats</span>
+                    </div>
+                </div>
+
+                <div class="character-card">
+                    <div class="character-header">
+                        <div class="avatar"></div>
+                        <div class="character-info">
+                            <div class="character-name">
+                                <h3>Harry Potter</h3>
+                                <div class="verified">✓</div>
+                            </div>
+                            <div class="character-desc">The boy who lived, now attending his first year at Hogwarts...</div>
+                        </div>
+                    </div>
+                    <div class="character-stats">
+                        <span>#5230 Rank</span>
+                        <span>98 Chats</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
