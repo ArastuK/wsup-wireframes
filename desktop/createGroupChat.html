@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Group Chat - WSUP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #1a1a1a;
+            --secondary-bg: #2a2a2a;
+            --accent-color: #7c5cff;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --border-color: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .header {
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+        }
+
+        .search-section {
+            background-color: var(--secondary-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            flex: 1;
+            background-color: var(--primary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 0.8rem 1rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-tab {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .filter-tab.active {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+        }
+
+        .filter-tab:hover:not(.active) {
+            background-color: rgba(124, 92, 255, 0.1);
+        }
+
+        .characters-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+            overflow-y: auto;
+        }
+
+        .character-card {
+            background-color: var(--secondary-bg);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+            position: relative;
+            height: 160px;
+            display: flex;
+        }
+
+        .character-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .character-card.selected {
+            border: 2px solid var(--accent-color);
+        }
+
+        .character-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--accent-color);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .character-image {
+            width: 120px;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .character-info {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        .character-name {
+            font-weight: 500;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .character-description {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            word-break: break-word;
+        }
+
+        .selected-characters {
+            background-color: var(--secondary-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .selected-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .selected-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .selected-count {
+            color: var(--accent-color);
+        }
+
+        .selected-grid {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .selected-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: rgba(124, 92, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+        }
+
+        .selected-item img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+        }
+
+        .remove-selected {
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.2rem;
+        }
+
+        .remove-selected:hover {
+            color: var(--text-primary);
+        }
+
+        .create-button {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+        }
+
+        .create-button:hover {
+            background-color: #6a4ed9;
+        }
+
+        .create-button:disabled {
+            background-color: var(--border-color);
+            cursor: not-allowed;
+        }
+
+        /* Left Panel Styles */
+        .left-panel {
+            width: 280px;
+            min-width: 280px;
+            background-color: var(--secondary-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .nav-section {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
+        }
+
+        .nav-button:hover {
+            background-color: rgba(124, 92, 255, 0.1);
+        }
+
+        .nav-button i {
+            font-size: 1.2rem;
+        }
+
+        .recent-chats {
+            flex: 1;
+            overflow-y: auto;
+            height: calc(100% - 60px); /* Subtract nav section height */
+        }
+
+        .chat-item {
+            display: flex;
+            padding: 1rem;
+            gap: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .chat-item:hover {
+            background-color: rgba(124, 92, 255, 0.1);
+        }
+
+        .chat-item.active {
+            background-color: rgba(124, 92, 255, 0.2);
+        }
+
+        .chat-item-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .chat-item-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .chat-item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-item-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-item-preview {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-item-time {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            min-width: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Right Panel Preview Styles */
+        .right-panel {
+            width: 300px;
+            min-width: 300px;
+            background-color: var(--secondary-bg);
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .preview-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .preview-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .preview-content {
+            flex: 1;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow-y: auto;
+            height: calc(100% - 100px); /* Subtract header height */
+        }
+
+        .preview-participants {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .preview-participant {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--primary-bg);
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .preview-participant img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+        }
+
+        .preview-message {
+            background-color: var(--primary-bg);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .preview-empty {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding: 2rem;
+        }
+
+        .error-message {
+            color: #ff4d4d;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .character-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .character-card.disabled:hover {
+            transform: none;
+        }
+
+        .group-name-section {
+            background-color: var(--secondary-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .group-name-container {
+            margin-bottom: 1rem;
+        }
+
+        .group-name-input {
+            width: 100%;
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 0.8rem 1rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .group-name-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .group-name-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .group-description-input {
+            width: 100%;
+            background-color: var(--primary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 0.8rem 1rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .group-description-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .group-description-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .group-description-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="nav-section">
+                <a href="#" class="nav-button">
+                    <i class="fas fa-home"></i>
+                    Feed
+                </a>
+            </div>
+            <div class="recent-chats">
+                <div class="chat-item">
+                    <div class="chat-item-avatar">
+                        <img src="https://api.dicebear.com/7.x/personas/svg?seed=Janelle" alt="Janelle">
+                    </div>
+                    <div class="chat-item-info">
+                        <div class="chat-item-name">Janelle</div>
+                        <div class="chat-item-preview">You really want to see what's beneath the...</div>
+                    </div>
+                    <div class="chat-item-time">2 hr</div>
+                </div>
+                <div class="chat-item">
+                    <div class="chat-item-avatar">
+                        <img src="https://api.dicebear.com/7.x/personas/svg?seed=GroupChat1" alt="Evening Soirée">
+                    </div>
+                    <div class="chat-item-info">
+                        <div class="chat-item-name">Evening Soirée</div>
+                        <div class="chat-item-preview">Victoria: That would be my father's work...</div>
+                    </div>
+                    <div class="chat-item-time">5 hr</div>
+                </div>
+                <div class="chat-item">
+                    <div class="chat-item-avatar">
+                        <img src="https://api.dicebear.com/7.x/personas/svg?seed=GroupChat2" alt="Midnight Masquerade">
+                    </div>
+                    <div class="chat-item-info">
+                        <div class="chat-item-name">Midnight Masquerade</div>
+                        <div class="chat-item-preview">Marcus: The masks hide more than just faces...</div>
+                    </div>
+                    <div class="chat-item-time">1 d</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <h1>Create a Group Chat</h1>
+                <p>Select characters to start a group conversation</p>
+            </div>
+
+            <div class="search-section">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Search characters...">
+                </div>
+                <div class="filter-tabs">
+                    <button class="filter-tab active">All Characters</button>
+                    <button class="filter-tab">My Characters</button>
+                    <button class="filter-tab">Popular</button>
+                    <button class="filter-tab">Recently Used</button>
+                </div>
+            </div>
+
+            <div class="group-name-section">
+                <div class="group-name-container">
+                    <input type="text" class="group-name-input" placeholder="Enter group name...">
+                </div>
+                <div class="group-description-container">
+                    <label class="group-description-label">Group Description (Optional)</label>
+                    <textarea class="group-description-input" placeholder="Describe the purpose or theme of this group chat..."></textarea>
+                </div>
+            </div>
+
+            <div class="selected-characters">
+                <div class="selected-header">
+                    <div class="selected-title">
+                        Selected Characters 
+                        <span class="selected-count">(0/4)</span>
+                    </div>
+                </div>
+                <div class="error-message" id="minError">Please select at least 2 characters to create a group chat</div>
+                <div class="error-message" id="maxError">Maximum 4 characters can be added to a group chat</div>
+                <div class="selected-grid">
+                    <!-- Selected characters will be added here -->
+                </div>
+            </div>
+
+            <div class="characters-grid">
+                <div class="character-card">
+                    <img src="https://api.dicebear.com/7.x/personas/svg?seed=Janelle" alt="Janelle" class="character-image">
+                    <div class="character-info">
+                        <div class="character-name">Janelle</div>
+                        <div class="character-description">Creative writer with a passion for poetry and late-night conversations</div>
+                    </div>
+                </div>
+                <div class="character-card">
+                    <img src="https://api.dicebear.com/7.x/personas/svg?seed=Sebastian" alt="Sebastian" class="character-image">
+                    <div class="character-info">
+                        <div class="character-name">Sebastian</div>
+                        <div class="character-description">Tech enthusiast who loves discussing AI and future innovations</div>
+                    </div>
+                </div>
+                <div class="character-card">
+                    <img src="https://api.dicebear.com/7.x/personas/svg?seed=Victoria" alt="Victoria" class="character-image">
+                    <div class="character-info">
+                        <div class="character-name">Victoria</div>
+                        <div class="character-description">Art curator with a keen eye for contemporary design and aesthetics</div>
+                    </div>
+                </div>
+                <div class="character-card">
+                    <img src="https://api.dicebear.com/7.x/personas/svg?seed=Marcus" alt="Marcus" class="character-image">
+                    <div class="character-info">
+                        <div class="character-name">Marcus</div>
+                        <div class="character-description">Music producer who enjoys deep conversations about life and creativity</div>
+                    </div>
+                </div>
+                <div class="character-card">
+                    <img src="https://api.dicebear.com/7.x/personas/svg?seed=Alex" alt="Alex" class="character-image">
+                    <div class="character-info">
+                        <div class="character-name">Alex</div>
+                        <div class="character-description">Adventure seeker who loves exploring new places and sharing stories</div>
+                    </div>
+                </div>
+                <div class="character-card">
+                    <img src="https://api.dicebear.com/7.x/personas/svg?seed=Emma" alt="Emma" class="character-image">
+                    <div class="character-info">
+                        <div class="character-name">Emma</div>
+                        <div class="character-description">Book lover who enjoys deep discussions about literature and philosophy</div>
+                    </div>
+                </div>
+                <div class="character-card">
+                    <img src="https://api.dicebear.com/7.x/personas/svg?seed=Ryan" alt="Ryan" class="character-image">
+                    <div class="character-info">
+                        <div class="character-name">Ryan</div>
+                        <div class="character-description">Fitness enthusiast with a passion for health and wellness discussions</div>
+                    </div>
+                </div>
+                <div class="character-card">
+                    <img src="https://api.dicebear.com/7.x/personas/svg?seed=Sophia" alt="Sophia" class="character-image">
+                    <div class="character-info">
+                        <div class="character-name">Sophia</div>
+                        <div class="character-description">Film critic who loves analyzing movies and discussing cinematography</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="create-button" disabled>Create Group Chat</button>
+        </div>
+
+        <div class="right-panel">
+            <div class="preview-header">
+                <div class="preview-title">Group Chat Preview</div>
+                <div class="preview-subtitle">See how your group chat will look</div>
+            </div>
+            <div class="preview-content">
+                <div class="preview-participants">
+                    <!-- Selected participants will appear here -->
+                </div>
+                <div class="preview-empty">
+                    <div>
+                        <i class="fas fa-users fa-2x" style="margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <p>Select characters to preview your group chat</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const MAX_CHARACTERS = 4;
+        const MIN_CHARACTERS = 2;
+        const TOTAL_LIMIT = 4;
+
+        const characterCards = document.querySelectorAll('.character-card');
+        const selectedGrid = document.querySelector('.selected-grid');
+        const selectedCount = document.querySelector('.selected-count');
+        const createButton = document.querySelector('.create-button');
+        const searchInput = document.querySelector('.search-input');
+        const groupNameInput = document.querySelector('.group-name-input');
+        const groupDescriptionInput = document.querySelector('.group-description-input');
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        const minError = document.getElementById('minError');
+        const maxError = document.getElementById('maxError');
+
+        let selectedCharacters = new Set();
+        let groupName = '';
+        let groupDescription = '';
+
+        // Handle group name input
+        groupNameInput.addEventListener('input', (e) => {
+            groupName = e.target.value;
+            updatePreview();
+            updateCreateButton();
+        });
+
+        // Handle group description input
+        groupDescriptionInput.addEventListener('input', (e) => {
+            groupDescription = e.target.value;
+            updatePreview();
+        });
+
+        // Handle character selection
+        characterCards.forEach(card => {
+            card.addEventListener('click', () => {
+                if (card.classList.contains('disabled')) return;
+
+                const name = card.querySelector('.character-name').textContent;
+                const image = card.querySelector('.character-image').src;
+
+                if (card.classList.contains('selected')) {
+                    card.classList.remove('selected');
+                    selectedCharacters.delete(name);
+                    removeSelectedItem(name);
+                } else {
+                    if (selectedCharacters.size >= MAX_CHARACTERS) {
+                        maxError.classList.add('show');
+                        return;
+                    }
+                    card.classList.add('selected');
+                    selectedCharacters.add(name);
+                    addSelectedItem(name, image);
+                }
+
+                updateSelectedCount();
+                updateCreateButton();
+                updatePreview();
+                updateErrorMessages();
+                updateCardStates();
+            });
+        });
+
+        // Handle filter tabs
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                filterTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                // Filter logic would go here
+            });
+        });
+
+        // Search functionality
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            characterCards.forEach(card => {
+                const name = card.querySelector('.character-name').textContent.toLowerCase();
+                const type = card.querySelector('.character-type').textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || type.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        function addSelectedItem(name, image) {
+            const item = document.createElement('div');
+            item.className = 'selected-item';
+            item.innerHTML = `
+                <img src="${image}" alt="${name}">
+                <span>${name}</span>
+                <i class="fas fa-times remove-selected" onclick="removeCharacter('${name}')"></i>
+            `;
+            selectedGrid.appendChild(item);
+        }
+
+        function removeSelectedItem(name) {
+            const items = selectedGrid.querySelectorAll('.selected-item');
+            items.forEach(item => {
+                if (item.querySelector('span').textContent === name) {
+                    item.remove();
+                }
+            });
+        }
+
+        function removeCharacter(name) {
+            selectedCharacters.delete(name);
+            removeSelectedItem(name);
+            
+            characterCards.forEach(card => {
+                if (card.querySelector('.character-name').textContent === name) {
+                    card.classList.remove('selected');
+                }
+            });
+
+            updateSelectedCount();
+            updateCreateButton();
+            updatePreview();
+        }
+
+        function updateErrorMessages() {
+            if (selectedCharacters.size < MIN_CHARACTERS) {
+                minError.classList.add('show');
+            } else {
+                minError.classList.remove('show');
+            }
+
+            if (selectedCharacters.size >= MAX_CHARACTERS) {
+                maxError.classList.add('show');
+            } else {
+                maxError.classList.remove('show');
+            }
+        }
+
+        function updateCardStates() {
+            characterCards.forEach(card => {
+                if (selectedCharacters.size >= MAX_CHARACTERS && !card.classList.contains('selected')) {
+                    card.classList.add('disabled');
+                } else {
+                    card.classList.remove('disabled');
+                }
+            });
+        }
+
+        function updateSelectedCount() {
+            selectedCount.textContent = `(${selectedCharacters.size}/${TOTAL_LIMIT})`;
+        }
+
+        function updateCreateButton() {
+            const hasValidGroupName = groupName.trim().length > 0;
+            const hasValidCharacterCount = selectedCharacters.size >= MIN_CHARACTERS && selectedCharacters.size <= MAX_CHARACTERS;
+            createButton.disabled = !hasValidGroupName || !hasValidCharacterCount;
+        }
+
+        // Add click handler for Create Group Chat button
+        createButton.addEventListener('click', () => {
+            if (!createButton.disabled) {
+                // Store the selected characters and group info in localStorage
+                localStorage.setItem('groupName', groupName);
+                localStorage.setItem('groupDescription', groupDescription);
+                localStorage.setItem('selectedCharacters', JSON.stringify(Array.from(selectedCharacters)));
+                
+                // Navigate to groupChat.html
+                window.location.href = 'groupChat.html';
+            }
+        });
+
+        // Update preview to show group name and description
+        function updatePreview() {
+            const previewParticipants = document.querySelector('.preview-participants');
+            const previewEmpty = document.querySelector('.preview-empty');
+            const previewTitle = document.querySelector('.preview-title');
+            const previewSubtitle = document.querySelector('.preview-subtitle');
+            
+            // Update preview title with group name
+            if (groupName.trim()) {
+                previewTitle.textContent = groupName;
+            } else {
+                previewTitle.textContent = 'Group Chat Preview';
+            }
+
+            // Update preview subtitle with group description
+            if (groupDescription.trim()) {
+                previewSubtitle.textContent = groupDescription;
+            } else {
+                previewSubtitle.textContent = 'See how your group chat will look';
+            }
+            
+            previewParticipants.innerHTML = '';
+            
+            if (selectedCharacters.size > 0) {
+                previewEmpty.style.display = 'none';
+                selectedCharacters.forEach(name => {
+                    const participant = document.createElement('div');
+                    participant.className = 'preview-participant';
+                    participant.innerHTML = `
+                        <img src="https://api.dicebear.com/7.x/personas/svg?seed=${name}" alt="${name}">
+                        <span>${name}</span>
+                    `;
+                    previewParticipants.appendChild(participant);
+                });
+
+                // Add example messages if characters are selected
+                const previewContent = document.querySelector('.preview-content');
+                if (!document.querySelector('.preview-message')) {
+                    const message = document.createElement('div');
+                    message.className = 'preview-message';
+                    message.innerHTML = 'Your group chat will appear here...';
+                    previewContent.appendChild(message);
+                }
+            } else {
+                previewEmpty.style.display = 'flex';
+                // Remove example messages
+                document.querySelectorAll('.preview-message').forEach(msg => msg.remove());
+            }
+        }
+    </script>
+</body>
+</html> 
