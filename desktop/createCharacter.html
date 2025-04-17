@@ -4,9 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Character - Wsup</title>
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .create-character-container {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #1a1a1a;
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
@@ -16,10 +30,29 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 1.5em;
-            margin-bottom: 30px;
-            color: white;
+            color: #fff;
             text-decoration: none;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .back-button:hover {
+            color: #7c5cff;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #2a2a2a;
+            border-radius: 2px;
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+
+        .progress {
+            width: 25%;
+            height: 100%;
+            background: #7c5cff;
+            border-radius: 2px;
         }
 
         .form-group {
@@ -28,103 +61,109 @@
 
         .form-label {
             display: block;
-            color: white;
-            font-size: 0.9em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
+            font-size: 14px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
 
-        .required::after {
+        .form-label.required::after {
             content: '*';
-            color: #666;
+            color: #7c5cff;
             margin-left: 4px;
         }
 
         .text-input {
             width: 100%;
             padding: 12px;
+            background: #2a2a2a;
+            border: 1px solid #333;
             border-radius: 8px;
-            background: #333;
-            border: none;
-            color: white;
-            font-size: 1em;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #7c5cff;
         }
 
         .radio-group {
             display: flex;
-            gap: 20px;
+            gap: 16px;
+            margin-top: 8px;
         }
 
         .radio-option {
             flex: 1;
             padding: 12px;
-            text-align: center;
-            background: #333;
+            background: #2a2a2a;
+            border: 1px solid #333;
             border-radius: 8px;
+            color: #fff;
+            text-align: center;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.2s;
         }
 
         .radio-option:hover {
-            background: #444;
+            background: #333;
         }
 
         .radio-option.selected {
-            background: #555;
+            background: rgba(124, 92, 255, 0.1);
+            border-color: #7c5cff;
+        }
+
+        .helper-text {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
         }
 
         .description-area {
             width: 100%;
             min-height: 120px;
             padding: 12px;
+            background: #2a2a2a;
+            border: 1px solid #333;
             border-radius: 8px;
-            background: #333;
-            border: none;
-            color: white;
-            font-size: 1em;
+            color: #fff;
+            font-size: 14px;
             resize: vertical;
+            margin-bottom: 4px;
+        }
+
+        .description-area:focus {
+            outline: none;
+            border-color: #7c5cff;
+        }
+
+        .generate-ai {
+            color: #7c5cff;
+            text-decoration: none;
+            float: right;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .generate-ai:hover {
+            text-decoration: underline;
         }
 
         .char-count {
             text-align: right;
-            color: #666;
-            font-size: 0.9em;
+            color: #888;
+            font-size: 12px;
             margin-top: 4px;
-        }
-
-        .generate-ai {
-            color: #FFD700;
-            text-decoration: none;
-            float: right;
-            margin-top: -30px;
-        }
-
-        .helper-text {
-            color: #666;
-            font-size: 0.9em;
-            margin-top: 4px;
-        }
-
-        .progress-bar {
-            height: 4px;
-            background: #333;
-            margin-bottom: 30px;
-            border-radius: 2px;
-        }
-
-        .progress {
-            width: 25%;
-            height: 100%;
-            background: linear-gradient(90deg, #4A90E2, #67B8E3);
-            border-radius: 2px;
         }
     </style>
 </head>
 <body>
-    <div class="create-character-container">
+    <div class="container">
         <a href="desktopPersona.html" class="back-button">
-            ← Create Character
+            <i class="fas fa-arrow-left"></i>
+            Create Character
         </a>
 
         <div class="progress-bar">
@@ -149,12 +188,8 @@
             <div class="form-group">
                 <label class="form-label required">Visibility</label>
                 <div class="radio-group">
-                    <div class="radio-option">
-                        Public
-                    </div>
-                    <div class="radio-option">
-                        Private
-                    </div>
+                    <div class="radio-option">Public</div>
+                    <div class="radio-option">Private</div>
                 </div>
             </div>
 
