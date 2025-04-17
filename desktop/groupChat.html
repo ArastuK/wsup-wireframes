@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Chat - WSUP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #1a1a1a;
+            --secondary-bg: #2a2a2a;
+            --accent-color: #7c5cff;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --border-color: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Left Panel Styles */
+        .left-panel {
+            width: 300px;
+            min-width: 300px;
+            background-color: var(--secondary-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .nav-section {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
+        }
+
+        .nav-button:hover {
+            background-color: rgba(124, 92, 255, 0.1);
+        }
+
+        .nav-button i {
+            font-size: 1.2rem;
+        }
+
+        .recent-chats {
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0; /* Allows container to scroll */
+        }
+
+        .chat-item {
+            display: flex;
+            padding: 1rem;
+            gap: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .chat-item:hover {
+            background-color: rgba(124, 92, 255, 0.1);
+        }
+
+        .chat-item.active {
+            background-color: rgba(124, 92, 255, 0.2);
+        }
+
+        .chat-item-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .chat-item-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .chat-item-info {
+            flex-grow: 1;
+            min-width: 0;
+            position: relative;
+        }
+
+        .group-tag {
+            display: inline-flex;
+            align-items: center;
+            background-color: rgba(124, 92, 255, 0.2);
+            color: var(--accent-color);
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.3rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+            gap: 0.3rem;
+        }
+
+        .group-tag i {
+            font-size: 0.7rem;
+        }
+
+        .chat-item-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-item-preview {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-item-time {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        /* Main Chat Styles */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            min-width: 0; /* Prevents flex items from overflowing */
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background-color: var(--secondary-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .back-button {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .group-info {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .group-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .participant-count {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-height: 0; /* Allows container to scroll */
+        }
+
+        .message {
+            display: flex;
+            gap: 1rem;
+            max-width: 80%;
+        }
+
+        .message.user {
+            margin-left: auto;
+            flex-direction: row-reverse;
+        }
+
+        .message-content {
+            background-color: var(--secondary-bg);
+            padding: 0.8rem 1rem;
+            border-radius: 1rem;
+            position: relative;
+        }
+
+        .message.user .message-content {
+            background-color: var(--accent-color);
+        }
+
+        .character-selector {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            background-color: var(--secondary-bg);
+            border-top: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .selector-hint {
+            position: relative;
+            margin-bottom: 1rem;
+            background-color: rgba(124, 92, 255, 0.1);
+            color: var(--text-secondary);
+            padding: 0.7rem 1.2rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            text-align: center;
+            border: 1px solid rgba(124, 92, 255, 0.2);
+            animation: fadeInOut 10s forwards;
+            backdrop-filter: blur(8px);
+        }
+
+        .selector-hint i {
+            color: var(--accent-color);
+            margin-right: 0.5rem;
+        }
+
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            80% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-10px);
+                display: none;
+            }
+        }
+
+        .selector-hint::after {
+            display: none;
+        }
+
+        .character-avatars-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .character-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .character-avatar:hover {
+            transform: scale(1.1);
+        }
+
+        .character-avatar.selected {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 3px var(--accent-color);
+        }
+
+        .character-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .chat-input {
+            margin-top: auto;
+            display: flex;
+            padding: 1rem;
+            gap: 1rem;
+            background-color: var(--secondary-bg);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .message-box {
+            flex-grow: 1;
+            background-color: var(--primary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1.5rem;
+            padding: 0.8rem 1rem;
+            color: var(--text-primary);
+            outline: none;
+            resize: none;
+            min-height: 40px;
+            max-height: 120px;
+        }
+
+        .send-button {
+            background-color: var(--accent-color);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .send-button:hover {
+            background-color: #6a4ed9;
+        }
+
+        .audio-indicator {
+            width: 20px;
+            height: 20px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .character-name {
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+            color: var(--accent-color);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--primary-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* Right Panel Styles */
+        .right-panel {
+            width: 300px;
+            min-width: 300px;
+            background-color: var(--secondary-bg);
+            padding: 1.5rem;
+            overflow-y: auto;
+            height: 100vh;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .group-details {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .group-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 1rem;
+            margin: 0 auto 1rem;
+            overflow: hidden;
+        }
+
+        .group-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .group-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .group-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+        }
+
+        .participants-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .participant-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .participant-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .participant-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .participant-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .participant-info {
+            flex-grow: 1;
+        }
+
+        .participant-name {
+            font-weight: 500;
+            margin-bottom: 0.2rem;
+        }
+
+        .participant-role {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="left-panel">
+        <div class="nav-section">
+            <a href="#" class="nav-button">
+                <i class="fas fa-home"></i>
+                Feed
+            </a>
+        </div>
+        <div class="recent-chats">
+            <div class="chat-item active">
+                <div class="chat-item-avatar">
+                    <img src="https://api.dicebear.com/7.x/personas/svg?seed=GroupChat1" alt="Evening Soirée">
+                </div>
+                <div class="chat-item-info">
+                    <div class="group-tag">
+                        <i class="fas fa-users"></i>
+                        GROUP
+                    </div>
+                    <div class="chat-item-name">Evening Soirée</div>
+                    <div class="chat-item-preview">Victoria: That would be my father's work...</div>
+                </div>
+                <div class="chat-item-time">Now</div>
+            </div>
+            <div class="chat-item">
+                <div class="chat-item-avatar">
+                    <img src="https://api.dicebear.com/7.x/personas/svg?seed=Janelle" alt="Janelle">
+                </div>
+                <div class="chat-item-info">
+                    <div class="chat-item-name">Janelle</div>
+                    <div class="chat-item-preview">You really want to see what's beneath the...</div>
+                </div>
+                <div class="chat-item-time">2 hr</div>
+            </div>
+            <div class="chat-item">
+                <div class="chat-item-avatar">
+                    <img src="https://api.dicebear.com/7.x/personas/svg?seed=GroupChat2" alt="Midnight Masquerade">
+                </div>
+                <div class="chat-item-info">
+                    <div class="group-tag">
+                        <i class="fas fa-users"></i>
+                        GROUP
+                    </div>
+                    <div class="chat-item-name">Midnight Masquerade</div>
+                    <div class="chat-item-preview">Marcus: The masks hide more than just faces...</div>
+                </div>
+                <div class="chat-item-time">5 hr</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <a href="#" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="group-info">
+                <span class="group-name">Evening Soirée</span>
+                <span class="participant-count">• 4 characters</span>
+            </div>
+        </div>
+
+        <div class="chat-messages">
+            <div class="message">
+                <div class="character-avatar">
+                    <img src="https://api.dicebear.com/7.x/personas/svg?seed=Janelle" alt="Janelle">
+                </div>
+                <div class="message-content">
+                    <div class="character-name">Janelle</div>
+                    Welcome everyone to the evening soirée. I trust you all found the venue without trouble?
+                    <div class="audio-indicator"></div>
+                </div>
+            </div>
+
+            <div class="message">
+                <div class="character-avatar">
+                    <img src="https://api.dicebear.com/7.x/personas/svg?seed=Sebastian" alt="Sebastian">
+                </div>
+                <div class="message-content">
+                    <div class="character-name">Sebastian</div>
+                    The directions were impeccable, as always. Though I must say, the fog adds quite the atmosphere.
+                    <div class="audio-indicator"></div>
+                </div>
+            </div>
+
+            <div class="message user">
+                <div class="message-content">
+                    The architecture is stunning. Who's the designer?
+                </div>
+            </div>
+
+            <div class="message">
+                <div class="character-avatar">
+                    <img src="https://api.dicebear.com/7.x/personas/svg?seed=Victoria" alt="Victoria">
+                </div>
+                <div class="message-content">
+                    <div class="character-name">Victoria</div>
+                    That would be my father's work. He had quite the vision for gothic revival.
+                    <div class="audio-indicator"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="character-selector">
+            <div class="selector-hint">
+                <i class="fas fa-info-circle"></i>
+                Click on a character's avatar to make them speak
+            </div>
+            <div class="character-avatars-container" style="display: flex; gap: 0.5rem;">
+                <div class="character-avatar selected">
+                    <img src="https://api.dicebear.com/7.x/personas/svg?seed=Janelle" alt="Janelle">
+                </div>
+                <div class="character-avatar">
+                    <img src="https://api.dicebear.com/7.x/personas/svg?seed=Sebastian" alt="Sebastian">
+                </div>
+                <div class="character-avatar">
+                    <img src="https://api.dicebear.com/7.x/personas/svg?seed=Victoria" alt="Victoria">
+                </div>
+                <div class="character-avatar">
+                    <img src="https://api.dicebear.com/7.x/personas/svg?seed=Marcus" alt="Marcus">
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input">
+            <textarea class="message-box" placeholder="Message..."></textarea>
+            <button class="send-button">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <div class="group-details">
+            <div class="group-avatar">
+                <img src="https://api.dicebear.com/7.x/personas/svg?seed=GroupChat1" alt="Evening Soirée">
+            </div>
+            <h2 class="group-title">Evening Soirée</h2>
+            <p class="group-description">A sophisticated gathering of intriguing personalities, each with their own secrets and stories to unfold.</p>
+        </div>
+
+        <div class="participants-section">
+            <h3 class="section-title">Participants</h3>
+            <div class="participant-list">
+                <div class="participant-item">
+                    <div class="participant-avatar">
+                        <img src="https://api.dicebear.com/7.x/personas/svg?seed=Janelle" alt="Janelle">
+                    </div>
+                    <div class="participant-info">
+                        <div class="participant-name">Janelle</div>
+                        <div class="participant-role">Host</div>
+                    </div>
+                </div>
+                <div class="participant-item">
+                    <div class="participant-avatar">
+                        <img src="https://api.dicebear.com/7.x/personas/svg?seed=Sebastian" alt="Sebastian">
+                    </div>
+                    <div class="participant-info">
+                        <div class="participant-name">Sebastian</div>
+                        <div class="participant-role">Guest</div>
+                    </div>
+                </div>
+                <div class="participant-item">
+                    <div class="participant-avatar">
+                        <img src="https://api.dicebear.com/7.x/personas/svg?seed=Victoria" alt="Victoria">
+                    </div>
+                    <div class="participant-info">
+                        <div class="participant-name">Victoria</div>
+                        <div class="participant-role">Guest</div>
+                    </div>
+                </div>
+                <div class="participant-item">
+                    <div class="participant-avatar">
+                        <img src="https://api.dicebear.com/7.x/personas/svg?seed=Marcus" alt="Marcus">
+                    </div>
+                    <div class="participant-info">
+                        <div class="participant-name">Marcus</div>
+                        <div class="participant-role">Guest</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Predefined messages for each character
+        const characterMessages = {
+            'Janelle': [
+                "The night is still young, darlings. What secrets shall we uncover?",
+                "I find your perspective... intriguing. Do tell me more.",
+                "Sometimes the most valuable conversations happen in the shadows."
+            ],
+            'Sebastian': [
+                "One must appreciate the finer details of such gatherings.",
+                "How fascinating. The plot thickens, doesn't it?",
+                "Let's not be too hasty to judge. Every story has its layers."
+            ],
+            'Victoria': [
+                "The architecture isn't the only thing with a hidden history here.",
+                "Some mysteries are better left unsolved... for now.",
+                "My father taught me that appearances can be deceiving."
+            ],
+            'Marcus': [
+                "The night holds many possibilities, wouldn't you agree?",
+                "I've seen similar situations unfold... differently.",
+                "Perhaps we should discuss this over a glass of wine?"
+            ]
+        };
+
+        // Function to create a new message element
+        function createMessageElement(character, message, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message${isUser ? ' user' : ''}`;
+            
+            if (!isUser) {
+                const avatarDiv = document.createElement('div');
+                avatarDiv.className = 'character-avatar';
+                avatarDiv.innerHTML = `<img src="https://api.dicebear.com/7.x/personas/svg?seed=${character}" alt="${character}">`;
+                messageDiv.appendChild(avatarDiv);
+            }
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            if (!isUser) {
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = character;
+                contentDiv.appendChild(nameDiv);
+            }
+
+            contentDiv.appendChild(document.createTextNode(message));
+
+            if (!isUser) {
+                const audioDiv = document.createElement('div');
+                audioDiv.className = 'audio-indicator';
+                contentDiv.appendChild(audioDiv);
+            }
+
+            messageDiv.appendChild(contentDiv);
+            return messageDiv;
+        }
+
+        // Function to add a new message to the chat
+        function addMessage(character, message, isUser = false) {
+            const chatMessages = document.querySelector('.chat-messages');
+            const messageElement = createMessageElement(character, message, isUser);
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Character selection functionality
+        const characterAvatars = document.querySelectorAll('.character-selector .character-avatar');
+        const messageBox = document.querySelector('.message-box');
+        let selectedCharacter = 'Janelle'; // Default selected character
+
+        characterAvatars.forEach(avatar => {
+            avatar.addEventListener('click', () => {
+                // Remove selected class from all avatars
+                characterAvatars.forEach(a => a.classList.remove('selected'));
+                // Add selected class to clicked avatar
+                avatar.classList.add('selected');
+                // Get character name from alt text
+                selectedCharacter = avatar.querySelector('img').alt;
+                
+                // Generate a random message from the selected character
+                const messages = characterMessages[selectedCharacter];
+                const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                addMessage(selectedCharacter, randomMessage);
+            });
+        });
+
+        // Send button functionality
+        const sendButton = document.querySelector('.send-button');
+        sendButton.addEventListener('click', () => {
+            const message = messageBox.value.trim();
+            if (message) {
+                addMessage(null, message, true);
+                messageBox.value = '';
+                messageBox.style.height = 'auto';
+                
+                // Simulate a response after a short delay
+                setTimeout(() => {
+                    const messages = characterMessages[selectedCharacter];
+                    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                    addMessage(selectedCharacter, randomMessage);
+                }, 1000);
+            }
+        });
+
+        // Enter key functionality for sending messages
+        messageBox.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendButton.click();
+            }
+        });
+
+        // Auto-resize textarea
+        messageBox.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        // Add this at the end of the script
+        // Remove the hint element after animation
+        setTimeout(() => {
+            const hint = document.querySelector('.selector-hint');
+            if (hint) {
+                hint.style.display = 'none';
+            }
+        }, 10000);
+    </script>
+</body>
+</html> 
