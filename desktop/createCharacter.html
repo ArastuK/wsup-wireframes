@@ -79,6 +79,23 @@
             margin-left: 4px;
         }
 
+        .form-label .hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: normal;
+            color: #666;
+            font-size: 12px;
+            text-transform: none;
+            letter-spacing: normal;
+            margin-left: 8px;
+        }
+
+        .form-label .hint i {
+            font-size: 12px;
+            color: #7c5cff;
+        }
+
         .text-input {
             width: 100%;
             padding: 16px;
@@ -222,6 +239,162 @@
         .btn-primary:hover {
             background: #6a4ce6;
         }
+
+        /* Personality Sliders */
+        .personality-sliders {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .slider-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .slider-label {
+            color: #888;
+            font-size: 14px;
+            min-width: 100px;
+            position: relative;
+            cursor: help;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .slider-label i {
+            font-size: 12px;
+            color: #666;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .slider-label:hover i {
+            opacity: 1;
+        }
+
+        .slider-label:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2a2a2a;
+            border: 1px solid #333;
+            padding: 12px 16px;
+            border-radius: 8px;
+            width: 280px;
+            color: #fff;
+            font-size: 13px;
+            line-height: 1.4;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 8px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        .tooltip .trait-name {
+            color: #7c5cff;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .slider-label.right .tooltip {
+            left: auto;
+            right: 0;
+            transform: translateX(0);
+        }
+
+        .slider-label.right .tooltip::after {
+            left: auto;
+            right: 20px;
+        }
+
+        .slider-label:not(.right) .tooltip {
+            right: auto;
+            left: 0;
+            transform: translateX(0);
+        }
+
+        .slider-label:not(.right) .tooltip::after {
+            right: auto;
+            left: 20px;
+        }
+
+        .slider-container {
+            flex: 1;
+            position: relative;
+            height: 24px;
+            display: flex;
+            align-items: center;
+        }
+
+        .slider-track {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: #2a2a2a;
+            border-radius: 2px;
+        }
+
+        .slider-dots {
+            position: absolute;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 8px;
+        }
+
+        .slider-dot {
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .slider-dot:hover {
+            background: #444;
+        }
+
+        .slider-handle {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 24px;
+            background: #7c5cff;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider-handle:hover {
+            background: #6a4ce6;
+            transform: translateX(-50%) scale(1.1);
+        }
     </style>
 </head>
 <body>
@@ -273,6 +446,251 @@
             </div>
 
             <div class="form-group">
+                <label class="form-label required">Personality</label>
+                <div class="personality-sliders">
+                    <div class="slider-row">
+                        <div class="slider-label">
+                            Serious
+                            <i class="fas fa-info-circle"></i>
+                            <div class="tooltip">
+                                <div class="trait-name">Tone: Serious</div>
+                                The character maintains a formal, no-nonsense demeanor.
+                            </div>
+                        </div>
+                        <div class="slider-container">
+                            <div class="slider-track"></div>
+                            <div class="slider-dots">
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                            </div>
+                            <div class="slider-handle"></div>
+                        </div>
+                        <div class="slider-label right">
+                            Funny
+                            <i class="fas fa-info-circle"></i>
+                            <div class="tooltip">
+                                <div class="trait-name">Tone: Joker</div>
+                                The character is playful, witty, and loves a good laugh, even in tense situations.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slider-row">
+                        <div class="slider-label">
+                            Introverted
+                            <i class="fas fa-info-circle"></i>
+                            <div class="tooltip">
+                                <div class="trait-name">Sociability: Introverted</div>
+                                The character is reflective, prefers quiet interactions, and might be selective in who they engage with.
+                            </div>
+                        </div>
+                        <div class="slider-container">
+                            <div class="slider-track"></div>
+                            <div class="slider-dots">
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                            </div>
+                            <div class="slider-handle"></div>
+                        </div>
+                        <div class="slider-label right">
+                            Extroverted
+                            <i class="fas fa-info-circle"></i>
+                            <div class="tooltip">
+                                <div class="trait-name">Sociability: Extroverted</div>
+                                The character is outgoing, thrives on social interaction, and enjoys energetic, lively conversations.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slider-row">
+                        <div class="slider-label">
+                            Formal
+                            <i class="fas fa-info-circle"></i>
+                            <div class="tooltip">
+                                <div class="trait-name">Communication Style: Formal</div>
+                                The character uses polished language, precise vocabulary, and maintains a professional tone.
+                            </div>
+                        </div>
+                        <div class="slider-container">
+                            <div class="slider-track"></div>
+                            <div class="slider-dots">
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                            </div>
+                            <div class="slider-handle"></div>
+                        </div>
+                        <div class="slider-label right">
+                            Casual
+                            <i class="fas fa-info-circle"></i>
+                            <div class="tooltip">
+                                <div class="trait-name">Communication Style: Casual</div>
+                                The character adopts a relaxed, conversational style with colloquial expressions and a friendly vibe.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slider-row">
+                        <div class="slider-label">
+                            Stoic
+                            <i class="fas fa-info-circle"></i>
+                            <div class="tooltip">
+                                <div class="trait-name">Emotional Expression: Stoic</div>
+                                The character keeps emotions in check, offering calm, measured responses even in dramatic scenarios.
+                            </div>
+                        </div>
+                        <div class="slider-container">
+                            <div class="slider-track"></div>
+                            <div class="slider-dots">
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                            </div>
+                            <div class="slider-handle"></div>
+                        </div>
+                        <div class="slider-label right">
+                            Expressive
+                            <i class="fas fa-info-circle"></i>
+                            <div class="tooltip">
+                                <div class="trait-name">Emotional Expression: Expressive</div>
+                                The character wears their heart on their sleeve, with vivid, dynamic reactions that heighten role play drama.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slider-row">
+                        <div class="slider-label">
+                            Traditional
+                            <i class="fas fa-info-circle"></i>
+                            <div class="tooltip">
+                                <div class="trait-name">Creativity: Traditional</div>
+                                The character respects norms and follows established patterns in behavior and dialogue.
+                            </div>
+                        </div>
+                        <div class="slider-container">
+                            <div class="slider-track"></div>
+                            <div class="slider-dots">
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                            </div>
+                            <div class="slider-handle"></div>
+                        </div>
+                        <div class="slider-label right">
+                            Innovative
+                            <i class="fas fa-info-circle"></i>
+                            <div class="tooltip">
+                                <div class="trait-name">Creativity: Innovative</div>
+                                The character is imaginative, unpredictable, and loves to break the mold—adding a twist to every scenario.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slider-row">
+                        <div class="slider-label">
+                            Transparent
+                            <i class="fas fa-info-circle"></i>
+                            <div class="tooltip">
+                                <div class="trait-name">Mystique: Transparent</div>
+                                The character is open and forthcoming, with clear, direct communication.
+                            </div>
+                        </div>
+                        <div class="slider-container">
+                            <div class="slider-track"></div>
+                            <div class="slider-dots">
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                            </div>
+                            <div class="slider-handle"></div>
+                        </div>
+                        <div class="slider-label right">
+                            Mysterious
+                            <i class="fas fa-info-circle"></i>
+                            <div class="tooltip">
+                                <div class="trait-name">Mystique: Mysterious</div>
+                                The character holds an enigmatic aura, sharing details sparingly and leaving room for intrigue.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slider-row">
+                        <div class="slider-label">
+                            Flirtatious
+                            <i class="fas fa-info-circle"></i>
+                            <div class="tooltip">
+                                <div class="trait-name">Romantic Playfulness: Flirtatious</div>
+                                The character effortlessly engages in playful banter and is quick to respond to romantic cues with charm.
+                            </div>
+                        </div>
+                        <div class="slider-container">
+                            <div class="slider-track"></div>
+                            <div class="slider-dots">
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                            </div>
+                            <div class="slider-handle"></div>
+                        </div>
+                        <div class="slider-label right">
+                            Reserved
+                            <i class="fas fa-info-circle"></i>
+                            <div class="tooltip">
+                                <div class="trait-name">Romantic Playfulness: Reserved</div>
+                                The character is more guarded in romantic interactions, keeping flirtation subtle and understated.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slider-row">
+                        <div class="slider-label">
+                            Receptive
+                            <i class="fas fa-info-circle"></i>
+                            <div class="tooltip">
+                                <div class="trait-name">Seduction Susceptibility: Easily Seduced</div>
+                                The character is open and responsive to romantic advances, lighting up at even subtle hints.
+                            </div>
+                        </div>
+                        <div class="slider-container">
+                            <div class="slider-track"></div>
+                            <div class="slider-dots">
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                                <div class="slider-dot"></div>
+                            </div>
+                            <div class="slider-handle"></div>
+                        </div>
+                        <div class="slider-label right">
+                            Guarded
+                            <i class="fas fa-info-circle"></i>
+                            <div class="tooltip">
+                                <div class="trait-name">Seduction Susceptibility: Hard to Please</div>
+                                The character remains unimpressed by casual overtures, requiring genuine, deep gestures to reveal their softer side.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
                 <label class="form-label required">Description</label>
                 <a href="#" class="generate-ai">
                     <i class="fas fa-magic"></i>
@@ -309,6 +727,53 @@
         textarea.addEventListener('input', () => {
             const count = textarea.value.length;
             charCount.textContent = `${count} / 1500`;
+        });
+
+        // Handle slider interaction
+        document.querySelectorAll('.slider-container').forEach(container => {
+            const handle = container.querySelector('.slider-handle');
+            const dots = container.querySelectorAll('.slider-dot');
+            const track = container.querySelector('.slider-track');
+            let isDragging = false;
+
+            function updateHandlePosition(e) {
+                const rect = track.getBoundingClientRect();
+                let x = e.clientX - rect.left;
+                x = Math.max(0, Math.min(x, rect.width));
+                
+                // Snap to nearest dot position
+                const dotWidth = rect.width / 4;
+                const dotPosition = Math.round(x / dotWidth);
+                x = dotPosition * dotWidth;
+                
+                handle.style.left = `${(x / rect.width) * 100}%`;
+            }
+
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    handle.style.left = `${(index / 4) * 100}%`;
+                });
+            });
+
+            handle.addEventListener('mousedown', () => {
+                isDragging = true;
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    updateHandlePosition(e);
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+
+            container.addEventListener('click', (e) => {
+                if (e.target !== handle) {
+                    updateHandlePosition(e);
+                }
+            });
         });
     </script>
 </body>
