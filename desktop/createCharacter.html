@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Character - Wsup</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .create-character-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            color: white;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .required::after {
+            content: '*';
+            color: #666;
+            margin-left: 4px;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            background: #333;
+            border: none;
+            color: white;
+            font-size: 1em;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+        }
+
+        .radio-option {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: #333;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .radio-option:hover {
+            background: #444;
+        }
+
+        .radio-option.selected {
+            background: #555;
+        }
+
+        .description-area {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border-radius: 8px;
+            background: #333;
+            border: none;
+            color: white;
+            font-size: 1em;
+            resize: vertical;
+        }
+
+        .char-count {
+            text-align: right;
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 4px;
+        }
+
+        .generate-ai {
+            color: #FFD700;
+            text-decoration: none;
+            float: right;
+            margin-top: -30px;
+        }
+
+        .helper-text {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 4px;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #333;
+            margin-bottom: 30px;
+            border-radius: 2px;
+        }
+
+        .progress {
+            width: 25%;
+            height: 100%;
+            background: linear-gradient(90deg, #4A90E2, #67B8E3);
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="create-character-container">
+        <a href="desktopPersona.html" class="back-button">
+            ← Create Character
+        </a>
+
+        <div class="progress-bar">
+            <div class="progress"></div>
+        </div>
+
+        <form>
+            <div class="form-group">
+                <label class="form-label required">Name</label>
+                <input type="text" class="text-input" placeholder="Give your character a name">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label required">Gender</label>
+                <div class="radio-group">
+                    <div class="radio-option">Male</div>
+                    <div class="radio-option">Female</div>
+                    <div class="radio-option">Non Binary</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label required">Visibility</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        Public
+                    </div>
+                    <div class="radio-option">
+                        Private
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label required">Chat Filter</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        Filtered
+                        <div class="helper-text">Safe for all audiences</div>
+                    </div>
+                    <div class="radio-option">
+                        Unfiltered
+                        <div class="helper-text">Mature themes allowed</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label required">Description</label>
+                <a href="#" class="generate-ai">Generate with AI</a>
+                <textarea class="description-area" placeholder="Describe your character's traits and story. Example: Mysterious, calm, smug, playful, badass. Uninterested. Does not trust people easily, always skeptical. A bit silly, proud, feminine, cute, cheeky, independent."></textarea>
+                <div class="char-count">0 / 1500</div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Handle radio option selection
+        document.querySelectorAll('.radio-option').forEach(option => {
+            option.addEventListener('click', () => {
+                // Remove selected class from siblings
+                option.parentElement.querySelectorAll('.radio-option').forEach(sibling => {
+                    sibling.classList.remove('selected');
+                });
+                // Add selected class to clicked option
+                option.classList.add('selected');
+            });
+        });
+
+        // Handle character count
+        const textarea = document.querySelector('.description-area');
+        const charCount = document.querySelector('.char-count');
+        
+        textarea.addEventListener('input', () => {
+            const count = textarea.value.length;
+            charCount.textContent = `${count} / 1500`;
+        });
+    </script>
+</body>
+</html> 
