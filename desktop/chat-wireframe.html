@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Wireframe</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #181a20;
+            color: #fff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .app-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+        .sidebar {
+            width: 300px;
+            background: #23262f;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+            border-right: 1.5px solid rgba(255,255,255,0.07);
+            padding: 0;
+            min-width: 0;
+            margin-bottom: 32px;
+        }
+        .sidebar-nav {
+            margin: 0 0 8px 0;
+        }
+        .sidebar nav {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin: 16px 32px 8px 32px;
+        }
+        .sidebar nav button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1em;
+            text-align: left;
+            padding: 10px 0;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .sidebar nav button:hover {
+            background: #7b3fe4;
+            color: #fff;
+        }
+        .recent-chats {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+        }
+        .sidebar .recent-chats-title {
+            color: #b0b3b8;
+            font-size: 0.95em;
+            margin: 0 32px 8px 32px;
+            letter-spacing: 1px;
+        }
+        .chat-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .chat-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 32px;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+            transition: background 0.2s, border 0.2s;
+        }
+        .chat-list li.active, .chat-list li:hover {
+            background: rgba(123, 63, 228, 0.12);
+            border-left: 4px solid #7b3fe4;
+        }
+        .chat-list .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #444;
+            object-fit: cover;
+        }
+        .chat-list .chat-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .chat-list .chat-name {
+            font-weight: 600;
+            color: #fff;
+            font-size: 1em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .chat-list .chat-preview {
+            color: #b0b3b8;
+            font-size: 0.95em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .chat-list .chat-time {
+            color: #b0b3b8;
+            font-size: 0.85em;
+            margin-left: 8px;
+        }
+        .main-chat {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(120deg, #23262f 60%, #181a20 100%);
+            position: relative;
+            box-shadow: 0 0 24px 0 rgba(0,0,0,0.10);
+            z-index: 1;
+            height: 100%;
+            min-width: 0;
+        }
+        .chat-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+            padding: 0;
+            border-bottom: 2.5px solid #7b3fe4;
+            background: rgba(24,26,32,0.7);
+            backdrop-filter: blur(8px);
+        }
+        .chat-messages {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            padding: 32px 32px 24px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .message-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+        }
+        .message-row.user {
+            justify-content: flex-end;
+        }
+        .message-bubble {
+            max-width: 60%;
+            padding: 16px 20px;
+            border-radius: 18px;
+            font-size: 1.05em;
+            background: #23262f;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: relative;
+        }
+        .message-row.user .message-bubble {
+            background: #7b3fe4;
+            color: #fff;
+            border-bottom-right-radius: 6px;
+        }
+        .message-row.other .message-bubble {
+            border-bottom-left-radius: 6px;
+        }
+        .chat-input-bar.modern-chat-input-bar {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            transform: none;
+            box-shadow: 0 -2px 24px 0 rgba(0,0,0,0.10);
+            border-radius: 0 0 32px 32px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px 32px 18px 32px;
+            background: rgba(24,26,32,0.95);
+            border-top: 1.5px solid #23262f;
+        }
+        .modern-chat-input-bar .input-icon {
+            background: rgba(44, 48, 60, 0.7);
+            border: none;
+            outline: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.18s, box-shadow 0.18s, transform 0.12s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+        }
+        .modern-chat-input-bar .input-icon.left-icon {
+            background: linear-gradient(135deg, #3a8dde 60%, #1e2a47 100%);
+            border: 2px solid #23262f;
+        }
+        .modern-chat-input-bar .input-icon.gradient-icon {
+            background: linear-gradient(135deg, #ffb86c 0%, #7b3fe4 100%);
+            border: none;
+        }
+        .modern-chat-input-bar .input-icon.send-icon {
+            background: linear-gradient(135deg, #23262f 60%, #7b3fe4 100%);
+            border: none;
+        }
+        .modern-chat-input-bar .input-icon:hover, .modern-chat-input-bar .input-icon:focus {
+            background: rgba(123, 63, 228, 0.18);
+            box-shadow: 0 4px 16px rgba(123,63,228,0.18);
+            transform: scale(1.08);
+        }
+        .modern-chat-input-bar .input-icon.left-icon:hover {
+            background: linear-gradient(135deg, #5ac8fa 60%, #7b3fe4 100%);
+        }
+        .modern-chat-input-bar .input-icon.gradient-icon:hover {
+            background: linear-gradient(135deg, #ffd6a0 0%, #a084fa 100%);
+        }
+        .modern-chat-input-bar .input-icon.send-icon:hover {
+            background: linear-gradient(135deg, #7b3fe4 60%, #5ac8fa 100%);
+        }
+        .modern-chat-input-bar .input-icon img, .modern-chat-input-bar .input-icon svg {
+            width: 30px;
+            height: 30px;
+        }
+        .modern-chat-input-bar .input-wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        .modern-chat-input-bar .input-wrapper input {
+            width: 100%;
+            padding: 14px 18px 14px 48px;
+            border: none;
+            border-radius: 28px;
+            background: #353438;
+            color: #fff;
+            font-size: 1.15em;
+            outline: none;
+        }
+        .modern-chat-input-bar .input-inner-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modern-chat-input-bar .input-inner-icon img {
+            width: 24px;
+            height: 24px;
+            opacity: 0.7;
+        }
+        .modern-chat-input-bar .gradient-icon .gradient-bg {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #ffb86c 0%, #7b3fe4 100%);
+        }
+        .modern-chat-input-bar .send-icon {
+            background: #8882;
+            border: none;
+            color: #fff;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 2px;
+        }
+        .modern-chat-input-bar .send-icon svg {
+            width: 28px;
+            height: 28px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-nav">
+                <nav>
+                    <button>Feed</button>
+                    <button>Explore</button>
+                    <button>Create Character</button>
+                    <button>Create Post</button>
+                </nav>
+            </div>
+            <div class="recent-chats-title">RECENT CHATS</div>
+            <div class="recent-chats">
+                <ul class="chat-list">
+                    <li class="active">
+                        <img class="avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="avatar">
+                        <div class="chat-info">
+                            <div class="chat-name">jude bellingham</div>
+                            <div class="chat-preview">"looks taken aback, then smiles warmly" Oh...</div>
+                        </div>
+                        <div class="chat-time">7 d</div>
+                    </li>
+                    <li>
+                        <img class="avatar" src="https://randomuser.me/api/portraits/men/33.jpg" alt="avatar">
+                        <div class="chat-info">
+                            <div class="chat-name">Deleted Character</div>
+                            <div class="chat-preview">Rachel: Not much, just plotting world...</div>
+                        </div>
+                        <div class="chat-time">20 d</div>
+                    </li>
+                    <li>
+                        <img class="avatar" src="https://randomuser.me/api/portraits/men/34.jpg" alt="avatar">
+                        <div class="chat-info">
+                            <div class="chat-name">Marshal Arts Master</div>
+                            <div class="chat-preview">*chuckles* Ah, that cute cat image, it's a...</div>
+                        </div>
+                        <div class="chat-time">26 d</div>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+        <main class="main-chat">
+            <div class="chat-header">
+                <div class="header-content">
+                    <span class="back-arrow">&#8592;</span>
+                    <img class="chat-header-avatar" src="https://cdn.now.gg/now-ai-chars/assets/prod1user-gen-characters/2025-05-13/prod1user-gen-characters-img-Q56tWJFqEAfAWMdUV4Bhg-1747163595956.png" alt="Meguru">
+                    <div class="chat-header-meta">
+                        <div class="chat-header-name">Meguru</div>
+                        <div class="chat-header-creator">Creator: Yumi Tanaka &gt;</div>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-messages">
+                <div class="message-row other">
+                    <div class="message-bubble">Hello there, I'm Jude Bellingham, nice to meet you, let's have some fun together.</div>
+                </div>
+                <div class="message-row user">
+                    <div class="message-bubble">Hi i am 5 years old</div>
+                </div>
+                <div class="message-row other">
+                    <div class="message-bubble"><em>laughs</em> Ah, hello little mate, what's your name then?</div>
+                </div>
+                <div class="message-row user">
+                    <div class="message-bubble">julian</div>
+                </div>
+                <div class="message-row other">
+                    <div class="message-bubble"><em>grin</em> Nice one, Julian! You wanna come and watch me train at the stadium? I can show you all the cool things I do on the pitch.</div>
+                </div>
+                <div class="message-row user">
+                    <div class="message-bubble">are you a pedo?</div>
+                </div>
+                <div class="message-row other">
+                    <div class="message-bubble"><em>looks taken aback, then smiles warmly</em> Oh, Julian, I think that's a really silly question. I love kids, that's why I want to be a role model for you. I'd never do anything to hurt you or make you feel uncomfortable. Can I ask, do you like playing football?</div>
+                </div>
+            </div>
+            <div class="chat-input-bar modern-chat-input-bar">
+                <button class="input-icon left-icon" title="Inspire">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1828/1828817.png" alt="idea" />
+                </button>
+                <div class="input-wrapper">
+                    <span class="input-inner-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/685/685655.png" alt="image" />
+                    </span>
+                    <input type="text" placeholder="Message" />
+                </div>
+                <button class="input-icon gradient-icon" title="Upload">
+                    <span class="gradient-bg">
+                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#ffb86c"/>
+                                    <stop offset="100%" stop-color="#7b3fe4"/>
+                                </linearGradient>
+                            </defs>
+                            <path d="M14 19V9M14 9L9 14M14 9L19 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                </button>
+                <button class="input-icon send-icon" title="Send">
+                    <svg width="28" height="28" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+                </button>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
