@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FeaturedScrollView</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: #1a1a1a;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 16px;
+        }
+
+        /* FeaturedScrollView container */
+        .featured-scroll-view {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 0 16px;
+            margin: 0 -16px;
+            width: calc(100% + 32px);
+        }
+
+        /* Base card shared dims (match character chip size from Explore page) */
+        .fsv-card {
+            flex: 0 0 260px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 999px;
+            cursor: pointer;
+        }
+
+        /* Character chips (Evelyn, Hafsah) */
+        .fsv-character {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .fsv-character .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #333;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .fsv-character .bubble {
+            position: absolute;
+            right: -2px;
+            bottom: -2px;
+            width: 16px;
+            height: 16px;
+            background: #5b54ff;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            border: 2px solid #1a1a1a;
+        }
+
+        .fsv-info { min-width: 0; flex: 1; }
+        .fsv-title {
+            display: flex; align-items: center; gap: 6px; margin-bottom: 2px;
+        }
+        .fsv-title h3 {
+            font-size: 13px; font-weight: 500; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .fsv-verified {
+            width: 14px; height: 14px; border-radius: 50%; background: #7c5cff; color: #fff; font-size: 10px; display: flex; align-items: center; justify-content: center;
+        }
+        .fsv-desc { font-size: 12px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+
+        /* Promotional cards (distinct look) */
+        .fsv-promo {
+            border: 1px solid rgba(124, 92, 255, 0.30);
+            background:
+                radial-gradient(120px 120px at -10% 50%, rgba(124,92,255,0.25), transparent 60%),
+                radial-gradient(120px 120px at 110% 50%, rgba(255,184,108,0.20), transparent 60%),
+                linear-gradient(135deg, rgba(50,50,60,0.8), rgba(35,35,40,0.9));
+        }
+
+        .fsv-promo .promo-icon {
+            width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff;
+            background: linear-gradient(135deg, #ffb86c, #7c5cff);
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.18);
+        }
+        .fsv-promo .promo-icon i { font-size: 16px; }
+
+        .fsv-promo .headline { font-size: 13px; font-weight: 600; color: #fff; }
+        .fsv-promo .tagline { font-size: 12px; color: #cfcfcf; opacity: 0.9; }
+
+        /* Individual promo accent borders (subtle distinction) */
+        .promo-group    { border-color: rgba(87,185,255,0.35); }
+        .promo-create   { border-color: rgba(255,184,108,0.40); }
+        .promo-persona  { border-color: rgba(124,92,255,0.45); }
+        .promo-taptale  { border-color: rgba(136,255,170,0.35); }
+
+        /* Demo heading */
+        .section-title { font-size: 13px; color: #777; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 12px; }
+
+        ::-webkit-scrollbar { width: 0; height: 0; }
+    </style>
+    </head>
+<body>
+    <div class="section-title">Featured</div>
+
+    <div class="featured-scroll-view">
+        <!-- Existing character chips -->
+        <div class="fsv-card fsv-character">
+            <div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1520975922284-8b456906c813?q=80&w=200&auto=format&fit=crop');"><span class="bubble"><i class="fas fa-comment-dots"></i></span></div>
+            <div class="fsv-info">
+                <div class="fsv-title">
+                    <h3>Evelyn , Farm Girl</h3>
+                    <span class="fsv-verified">✓</span>
+                </div>
+                <div class="fsv-desc">Handles Midnight Storm</div>
+            </div>
+        </div>
+
+        <div class="fsv-card fsv-character">
+            <div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop');"><span class="bubble"><i class="fas fa-comment-dots"></i></span></div>
+            <div class="fsv-info">
+                <div class="fsv-title">
+                    <h3>Hafsah</h3>
+                    <span class="fsv-verified">✓</span>
+                </div>
+                <div class="fsv-desc">Slays tick-tok Roblox Snap...</div>
+            </div>
+        </div>
+
+        <!-- New promotional feature cards -->
+        <div class="fsv-card fsv-promo promo-group">
+            <div class="promo-icon"><i class="fas fa-user-group"></i></div>
+            <div class="fsv-info">
+                <div class="headline">Group Chat</div>
+                <div class="tagline">Chat together</div>
+            </div>
+        </div>
+
+        <div class="fsv-card fsv-promo promo-create">
+            <div class="promo-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+            <div class="fsv-info">
+                <div class="headline">Character Creation</div>
+                <div class="tagline">Bring them to life</div>
+            </div>
+        </div>
+
+        <div class="fsv-card fsv-promo promo-persona">
+            <div class="promo-icon"><i class="fas fa-user"></i></div>
+            <div class="fsv-info">
+                <div class="headline">Create a Persona</div>
+                <div class="tagline">Define yourself</div>
+            </div>
+        </div>
+
+        <div class="fsv-card fsv-promo promo-taptale">
+            <div class="promo-icon"><i class="fas fa-book-open"></i></div>
+            <div class="fsv-info">
+                <div class="headline">Create a Taptale</div>
+                <div class="tagline">Write a story</div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
+
+

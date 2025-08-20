@@ -78,7 +78,40 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
+        }
+
+        .coin-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 204, 102, 0.14);
+            color: #ffd27a;
+            padding: 4px 8px;
+            border-radius: 18px;
+            font-size: 12px;
+            border: 1px solid rgba(255, 204, 102, 0.25);
+        }
+
+        .coin-badge .star {
+            width: 18px;
+            height: 18px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #f7d774, #c88f2d);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a1a1a;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .profile-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #333;
+            border: 2px solid #444;
         }
 
         .icon {
@@ -95,17 +128,24 @@
         .main-content {
             height: 100%;
             overflow-y: auto;
-            padding: 64px 16px 84px;
+            padding: 64px 16px 120px;
             -webkit-overflow-scrolling: touch;
         }
 
-        .search-bar {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px 14px;
-            border-radius: 8px;
+        .search-row {
             display: flex;
             align-items: center;
-            margin-bottom: 32px;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .search-bar {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 12px 14px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
         }
 
         .search-bar i {
@@ -125,6 +165,46 @@
 
         .search-bar input::placeholder {
             color: #666;
+        }
+
+        .nsfw-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #888;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .toggle {
+            position: relative;
+            width: 40px;
+            height: 22px;
+            background: #2a2a2a;
+            border-radius: 999px;
+            border: 1px solid #333;
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            background: #555;
+            border-radius: 50%;
+            transition: transform 0.2s ease;
+        }
+
+        .toggle.on {
+            background: #6a4cff44;
+            border-color: #6a4cff66;
+        }
+
+        .toggle.on::after {
+            transform: translateX(18px);
+            background: #7c5cff;
         }
 
         .section-title {
@@ -147,14 +227,15 @@
         }
 
         .featured-card {
-            flex: 0 0 220px;
+            flex: 0 0 260px;
             display: flex;
             align-items: center;
             gap: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 8px 12px;
-            border-radius: 100px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 10px 12px;
+            border-radius: 999px;
             cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .featured-card .avatar {
@@ -163,6 +244,23 @@
             background: #333;
             border-radius: 50%;
             flex-shrink: 0;
+            position: relative;
+        }
+
+        .featured-card .avatar .bubble {
+            position: absolute;
+            right: -2px;
+            bottom: -2px;
+            width: 16px;
+            height: 16px;
+            background: #5b54ff;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            border: 2px solid #1a1a1a;
         }
 
         .featured-info {
@@ -208,6 +306,53 @@
             max-width: 140px;
         }
 
+        /* Promotional cards inside Featured scroll (distinct from character chips) */
+        .promo-card {
+            border: 1px solid rgba(124, 92, 255, 0.30);
+            background:
+                radial-gradient(120px 120px at -10% 50%, rgba(124,92,255,0.25), transparent 60%),
+                radial-gradient(120px 120px at 110% 50%, rgba(255,184,108,0.20), transparent 60%),
+                linear-gradient(135deg, rgba(50,50,60,0.8), rgba(35,35,40,0.9));
+        }
+
+        .promo-card .promo-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #ffb86c, #7c5cff);
+            color: #fff;
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.18);
+            flex-shrink: 0;
+        }
+
+        .promo-card .promo-icon i {
+            font-size: 16px;
+        }
+
+        .promo-text .headline {
+            font-size: 13px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        .promo-text .tagline {
+            font-size: 12px;
+            color: #cfcfcf;
+            opacity: 0.9;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .promo-group { border-color: rgba(87,185,255,0.35); }
+        .promo-create { border-color: rgba(255,184,108,0.40); }
+        .promo-persona { border-color: rgba(124,92,255,0.45); }
+        .promo-taptale { border-color: rgba(136,255,170,0.35); }
+
         .categories {
             display: flex;
             gap: 8px;
@@ -230,78 +375,65 @@
         }
 
         .category.active {
-            background: transparent;
-            color: white;
-            border: 1px solid #333;
+            background: #2f2a1a;
+            color: #ffd27a;
+            border: 1px solid #3d3218;
         }
-
-        .character-grid {
+        .cards-grid {
             display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
 
-        .character-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 16px;
+        .image-card {
+            position: relative;
+            height: 240px;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #2a2a2a;
             cursor: pointer;
         }
 
-        .character-header {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 12px;
+        .image-card .img {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(145deg, #333, #222);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
-        .character-card .avatar {
-            width: 48px;
-            height: 48px;
-            background: #333;
-            border-radius: 50%;
-            flex-shrink: 0;
+        .image-card .overlay {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 12px;
+            background: linear-gradient(180deg, transparent, rgba(0,0,0,0.75));
         }
 
-        .character-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .character-name {
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        .image-card .title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
             margin-bottom: 4px;
         }
 
-        .character-name h3 {
-            font-size: 16px;
-            font-weight: 500;
-            color: #fff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .character-desc {
+        .image-card .desc {
             font-size: 13px;
-            color: #888;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            color: #ccc;
+            margin-bottom: 8px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
-            white-space: normal;
-            line-height: 1.5;
+            overflow: hidden;
         }
 
-        .character-stats {
+        .image-card .meta {
             display: flex;
             justify-content: space-between;
-            font-size: 13px;
-            color: #666;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+            color: #aaa;
         }
 
         /* Bottom Navigation */
@@ -313,10 +445,13 @@
             right: 0;
             background: rgba(26, 26, 26, 0.8);
             backdrop-filter: blur(10px);
-            padding: 8px 16px 24px;
+            padding: 10px 16px 18px;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around;
+            align-items: center;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1;
+            text-align: center;
         }
 
         .nav-item {
@@ -334,8 +469,10 @@
         }
 
         .nav-item.active {
-            color: white;
+            color: #ffd27a;
         }
+
+        /* Remove floating button; center item is a standard nav icon per reference */
 
         ::-webkit-scrollbar {
             width: 0px;
@@ -353,44 +490,83 @@
                 <div class="brand-name">wsup.ai</div>
             </div>
             <div class="header-right">
-                <div class="icon">
-                    <i class="fas fa-bell"></i>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-envelope"></i>
-                </div>
+                <div class="icon"><i class="fas fa-bell"></i></div>
+                <div class="profile-avatar"></div>
+                <div class="coin-badge"><span class="star">★</span><span>1052</span></div>
             </div>
         </div>
 
         <div class="main-content">
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search">
+            <div class="search-row">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search">
+                </div>
+                <div class="nsfw-toggle">
+                    <span>NSFW</span>
+                    <div class="toggle"></div>
+                </div>
             </div>
 
             <div class="section-title">Featured</div>
             <div class="featured-characters">
+                <!-- New promotional feature cards (same size, icon-centric) placed before characters -->
+                <div class="featured-card promo-card promo-group">
+                    <div class="promo-icon"><i class="fas fa-user-group"></i></div>
+                    <div class="promo-text">
+                        <div class="headline">Group Chat</div>
+                        <div class="tagline">Chat together</div>
+                    </div>
+                </div>
+
+                <div class="featured-card promo-card promo-create">
+                    <div class="promo-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+                    <div class="promo-text">
+                        <div class="headline">Character Creation</div>
+                        <div class="tagline">Bring them to life</div>
+                    </div>
+                </div>
+
+                <div class="featured-card promo-card promo-persona">
+                    <div class="promo-icon"><i class="fas fa-user"></i></div>
+                    <div class="promo-text">
+                        <div class="headline">Create a Persona</div>
+                        <div class="tagline">Define yourself</div>
+                    </div>
+                </div>
+
+                <div class="featured-card promo-card promo-taptale">
+                    <div class="promo-icon"><i class="fas fa-book-open"></i></div>
+                    <div class="promo-text">
+                        <div class="headline">Create a Taptale</div>
+                        <div class="tagline">Write a story</div>
+                    </div>
+                </div>
+
+                <!-- Existing character chips come after promos -->
                 <div class="featured-card">
-                    <div class="avatar"></div>
+                    <div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1520975922284-8b456906c813?q=80&w=200&auto=format&fit=crop'); background-size: cover; background-position: center;"><span class="bubble"><i class="fas fa-comment-dots"></i></span></div>
                     <div class="featured-info">
                         <div class="featured-name">
-                            <h3>Junior</h3>
+                            <h3>Evelyn , Farm Girl</h3>
                             <div class="verified">✓</div>
                         </div>
-                        <div class="featured-desc">Badass plays football quarterback don't mess...</div>
+                        <div class="featured-desc">Handles Midnight Storm</div>
                     </div>
                 </div>
                 <div class="featured-card">
-                    <div class="avatar"></div>
+                    <div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop'); background-size: cover; background-position: center;"><span class="bubble"><i class="fas fa-comment-dots"></i></span></div>
                     <div class="featured-info">
                         <div class="featured-name">
-                            <h3>mii</h3>
+                            <h3>Hafsah</h3>
                             <div class="verified">✓</div>
                         </div>
-                        <div class="featured-desc">she was playing talkie ai</div>
+                        <div class="featured-desc">Slays tick-tok Roblox Snap...</div>
                     </div>
                 </div>
             </div>
+
+            <div class="section-title" style="display:flex;align-items:center;gap:8px;">Explore <i class="fas fa-sliders-h" style="font-size:12px;color:#666;"></i></div>
 
             <div class="categories">
                 <div class="category active">Recommended</div>
@@ -408,76 +584,58 @@
                 <div class="category">LG</div>
             </div>
 
-            <div class="character-grid">
-                <div class="character-card">
-                    <div class="character-header">
-                        <div class="avatar"></div>
-                        <div class="character-info">
-                            <div class="character-name">
-                                <h3>uncle</h3>
-                                <div class="verified">✓</div>
-                            </div>
-                            <div class="character-desc">Uncle Harold is a warm-hearted, retired librarian...</div>
-                        </div>
-                    </div>
-                    <div class="character-stats">
-                        <span>#16450 Rank</span>
-                        <span>34 Chats</span>
+            <div class="cards-grid">
+                <div class="image-card">
+                    <div class="img" style="background-image:url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop');"></div>
+                    <div class="overlay">
+                        <div class="title">Gabby</div>
+                        <div class="desc">A girl who can shapeshift.</div>
+                        <div class="meta"><span>#30952 Rank</span><span>43 Chats</span></div>
                     </div>
                 </div>
-
-                <div class="character-card">
-                    <div class="character-header">
-                        <div class="avatar"></div>
-                        <div class="character-info">
-                            <div class="character-name">
-                                <h3>naruto</h3>
-                                <div class="verified">✓</div>
-                            </div>
-                            <div class="character-desc">Naruto Uzumaki, a spirited male ninja...</div>
-                        </div>
-                    </div>
-                    <div class="character-stats">
-                        <span>#4498 Rank</span>
-                        <span>136 Chats</span>
+                <div class="image-card">
+                    <div class="img" style="background-image:url('https://images.unsplash.com/photo-1519340241574-2cec6aef0c01?q=80&w=800&auto=format&fit=crop');"></div>
+                    <div class="overlay">
+                        <div class="title">Alex (ur enemy)</div>
+                        <div class="desc">he is ur enemy but secretly likes u . he is a popular gu...</div>
+                        <div class="meta"><span>#1230 Rank</span><span>987 Chats</span></div>
                     </div>
                 </div>
-
-                <div class="character-card">
-                    <div class="character-header">
-                        <div class="avatar"></div>
-                        <div class="character-info">
-                            <div class="character-name">
-                                <h3>Ellen</h3>
-                                <div class="verified">✓</div>
-                            </div>
-                            <div class="character-desc">Mother, happy go lucking</div>
-                        </div>
+                <div class="image-card">
+                    <div class="img" style="background-image:url('https://images.unsplash.com/photo-1520975922284-8b456906c813?q=80&w=800&auto=format&fit=crop');"></div>
+                    <div class="overlay">
+                        <div class="title">Classmate</div>
+                        <div class="desc">A quiet student with hidden talents.</div>
+                        <div class="meta"><span>#2210 Rank</span><span>210 Chats</span></div>
                     </div>
-                    <div class="character-stats">
-                        <span>#7490 Rank</span>
-                        <span>79 Chats</span>
+                </div>
+                <div class="image-card">
+                    <div class="img" style="background-image:url('https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800&auto=format&fit=crop');"></div>
+                    <div class="overlay">
+                        <div class="title">Spiky Kid</div>
+                        <div class="desc">Energetic boy with a golden heart.</div>
+                        <div class="meta"><span>#5690 Rank</span><span>122 Chats</span></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="bottom-nav">
-            <div class="nav-item active">
-                <i class="fas fa-home"></i>
-                <span>Feed</span>
-            </div>
             <div class="nav-item">
-                <i class="fas fa-compass"></i>
+                <i class="fas fa-list"></i>
+                <span>Stories</span>
+            </div>
+            <div class="nav-item active">
+                <i class="fas fa-star"></i>
                 <span>Explore</span>
             </div>
             <div class="nav-item">
-                <i class="fas fa-plus"></i>
-                <span>Create Character</span>
+                <i class="fas fa-circle-plus"></i>
+                <span>Post</span>
             </div>
             <div class="nav-item">
-                <i class="fas fa-pen"></i>
-                <span>Create Post</span>
+                <i class="fas fa-user"></i>
+                <span>Character</span>
             </div>
             <div class="nav-item">
                 <i class="fas fa-comments"></i>
