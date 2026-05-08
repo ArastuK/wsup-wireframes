@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>wsup.ai — FTUE Swipe Prototype v2 (Exp 2)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Caveat:wght@500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a14;
+  --bg-2: #14142b;
+  --surface: #1a1a2e;
+  --surface-2: #242442;
+  --text: #ffffff;
+  --text-dim: #a0a0b0;
+  --accent: #e94560;
+  --like: #4ade80;
+  --pass: #ef4444;
+  --grad-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --grad-pink: linear-gradient(135deg, #f472b6 0%, #a78bfa 100%);
+  --grad-warm: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  background-image:
+    radial-gradient(circle at 20% 0%, rgba(118, 75, 162, 0.18), transparent 50%),
+    radial-gradient(circle at 80% 100%, rgba(233, 69, 96, 0.15), transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(74, 144, 226, 0.06), transparent 70%);
+}
+
+.mobile-container {
+  width: 100%;
+  max-width: 414px;
+  background: var(--bg);
+  min-height: calc(100vh - 40px);
+  border-radius: 28px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.screen { display: none; padding: 20px 20px 16px; min-height: calc(100vh - 40px); }
+.screen.active { display: flex; flex-direction: column; }
+#screen-2 { padding-top: 16px; }
+
+.header-logo {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 20px;
+  font-weight: 800; font-size: 1.2rem;
+}
+#screen-2 .header-logo { margin-bottom: 14px; }
+.top-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.top-bar .header-logo { margin-bottom: 0; }
+.skip-btn {
+  background: transparent; border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-dim); font-size: 0.78rem; font-weight: 600;
+  padding: 6px 12px 6px 14px; border-radius: 100px; cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  transition: all 0.15s ease;
+}
+.skip-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.04); }
+.skip-btn .x { font-size: 1rem; line-height: 1; opacity: 0.7; }
+.header-logo .emoji {
+  background: var(--grad-pink); -webkit-background-clip: text;
+  background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.5rem;
+}
+
+/* ---------- Screen 1: Welcome ---------- */
+.welcome-h1 { font-size: 1.9rem; font-weight: 800; line-height: 1.15; margin-bottom: 8px; letter-spacing: -0.02em; }
+.welcome-sub { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 32px; }
+.field-group { margin-bottom: 28px; }
+.field-label {
+  font-size: 0.78rem; font-weight: 700; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; display: block;
+}
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  padding: 12px 18px;
+  border-radius: 100px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.chip:hover { background: var(--surface-2); border-color: rgba(255, 255, 255, 0.16); }
+.chip.selected {
+  background: var(--grad-primary);
+  border-color: transparent; font-weight: 600;
+  box-shadow: 0 4px 16px rgba(118, 75, 162, 0.4);
+}
+.cta-button {
+  background: var(--grad-primary); color: white; border: none;
+  padding: 16px 24px; border-radius: 16px; font-size: 1rem; font-weight: 700;
+  cursor: pointer; margin-top: auto; transition: all 0.15s ease; letter-spacing: 0.01em;
+}
+.cta-button:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(118, 75, 162, 0.4); }
+.cta-button:disabled {
+  background: var(--surface-2); cursor: not-allowed; opacity: 0.5;
+  transform: none; box-shadow: none;
+}
+
+/* ---------- Screen 2: Swipe Deck ---------- */
+.deck-header {
+  display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;
+  flex-shrink: 0;
+}
+.deck-title-block { display: flex; flex-direction: column; gap: 4px; }
+.deck-title { font-size: 1.1rem; font-weight: 700; }
+.deck-subtitle { color: var(--text-dim); font-size: 0.78rem; }
+
+.progress-dots {
+  display: flex; gap: 4px; margin: 4px 0 10px;
+  flex-shrink: 0;
+}
+.progress-dot {
+  flex: 1; height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px;
+  transition: background 0.3s ease;
+}
+.progress-dot.done { background: var(--grad-primary); }
+.progress-dot.active { background: var(--accent); }
+
+.card-stack {
+  position: relative;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 420px;
+  margin-bottom: 16px;
+  perspective: 1000px;
+}
+
+/* CARD ITSELF — image dominates top, chat bubble preview at bottom */
+.card {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+  background: var(--surface);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease;
+  display: flex; flex-direction: column;
+}
+.card:active { cursor: grabbing; }
+.card.dragging { transition: none; }
+
+.card-image-wrap {
+  position: relative;
+  flex: 1 1 auto;
+  overflow: hidden;
+  background: #181830;
+}
+.card-image {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  transition: transform 8s ease-out;
+}
+.card.top-card .card-image { transform: scale(1.08); }   /* slow Ken Burns on top card */
+.card-image-fallback {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3rem; opacity: 0.4;
+}
+.card-image-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(10,10,20,0.0) 50%, rgba(10,10,20,0.45) 100%);
+  pointer-events: none;
+}
+
+/* Top-left archetype badge */
+.card-arch {
+  position: absolute; top: 14px; left: 14px;
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(0,0,0,0.55); backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 6px 12px 6px 8px; border-radius: 100px;
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.02em;
+}
+.card-arch-emoji { font-size: 1rem; }
+
+/* Top-right stat / featured badge */
+.card-feat {
+  position: absolute; top: 14px; right: 14px;
+  background: rgba(0,0,0,0.55); backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 6px 11px; border-radius: 100px;
+  font-size: 0.72rem; font-weight: 600;
+  display: flex; align-items: center; gap: 5px;
+}
+.card-feat .pulse-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--like);
+  box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+  animation: pulse 1.8s infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.6); }
+  70% { box-shadow: 0 0 0 8px rgba(74, 222, 128, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+}
+
+/* Name block sitting on bottom of image area */
+.card-nameblock {
+  position: absolute; bottom: 14px; left: 16px; right: 16px;
+  z-index: 1;
+}
+.card-name { font-size: 1.55rem; font-weight: 800; letter-spacing: -0.01em; line-height: 1.15; text-shadow: 0 2px 8px rgba(0,0,0,0.6); }
+.card-meta { font-size: 0.85rem; color: rgba(255,255,255,0.85); margin-top: 2px; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
+.card-meta .arch-label { color: #fbbf24; font-weight: 600; }
+
+/* Bottom panel: hook + chat-bubble greeting preview */
+.card-panel {
+  flex: 0 0 auto;
+  background: linear-gradient(180deg, #181830 0%, #14142b 100%);
+  padding: 12px 16px 14px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.card-hook {
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: rgba(255,255,255,0.72);
+  font-style: italic;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.bubble-eyebrow {
+  font-size: 0.58rem; letter-spacing: 0.14em;
+  color: var(--text-dim); font-weight: 700;
+  text-transform: uppercase;
+  margin-left: 32px;
+  margin-bottom: 2px;
+}
+.bubble-row {
+  display: flex; gap: 8px; align-items: flex-start;
+}
+.bubble-avatar {
+  width: 24px; height: 24px; border-radius: 50%;
+  background-size: cover; background-position: center;
+  background-color: var(--surface-2);
+  border: 1.5px solid rgba(255,255,255,0.12);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.bubble {
+  background: var(--surface-2);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px 16px 16px 4px;
+  padding: 9px 13px;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: rgba(255,255,255,0.95);
+  max-width: calc(100% - 32px);
+  font-family: 'Inter', sans-serif;
+  min-height: 38px;
+}
+.bubble-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* Typewriter cursor */
+.tw-cursor {
+  display: inline-block;
+  width: 2px; height: 1em; background: rgba(255,255,255,0.85);
+  margin-left: 2px; vertical-align: text-bottom;
+  animation: tw-blink 0.9s step-end infinite;
+}
+@keyframes tw-blink { 50% { opacity: 0; } }
+
+/* Tags row — small, just first 2-3 */
+.card-tags {
+  display: flex; gap: 5px; flex-wrap: wrap; margin-top: 2px;
+}
+.card-tag {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 3px 9px; border-radius: 100px;
+  font-size: 0.65rem; font-weight: 600;
+  color: rgba(255,255,255,0.65);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+/* Drag direction overlays */
+.card-overlay {
+  position: absolute; top: 28px;
+  font-size: 1.6rem; font-weight: 900; padding: 6px 16px;
+  border: 3px solid; border-radius: 12px; opacity: 0;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  pointer-events: none; transition: opacity 0.1s ease;
+  z-index: 5;
+}
+.card-overlay.like { right: 24px; color: var(--like); border-color: var(--like); transform: rotate(15deg); }
+.card-overlay.pass { left: 24px; color: var(--pass); border-color: var(--pass); transform: rotate(-15deg); }
+
+/* Wiggle hint on first card to show it's draggable */
+@keyframes wiggle {
+  0%, 90%, 100% { transform: translate(0, 0) rotate(0); }
+  93% { transform: translate(8px, 0) rotate(2deg); }
+  96% { transform: translate(-6px, 0) rotate(-1.5deg); }
+}
+.card.first-time { animation: wiggle 3.5s ease-in-out 0.6s 1; }
+
+.action-row {
+  display: flex; justify-content: center; gap: 22px; margin-top: 0;
+  flex-shrink: 0;
+}
+.action-btn {
+  width: 60px; height: 60px; border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.5rem; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s ease;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+.action-btn:hover { transform: scale(1.07); }
+.action-btn.pass { color: var(--pass); border-color: rgba(239, 68, 68, 0.3); }
+.action-btn.pass:hover { background: rgba(239, 68, 68, 0.1); border-color: var(--pass); }
+.action-btn.like { color: var(--like); border-color: rgba(74, 222, 128, 0.3); }
+.action-btn.like:hover { background: rgba(74, 222, 128, 0.1); border-color: var(--like); }
+.action-btn.info {
+  width: 44px; height: 44px; font-size: 1rem; align-self: center;
+  color: var(--text-dim); border-color: rgba(255,255,255,0.1);
+}
+
+.kbd-hint { text-align: center; color: var(--text-dim); font-size: 0.72rem; margin-top: 12px; flex-shrink: 0; }
+.kbd { background: var(--surface); padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.72rem; border: 1px solid rgba(255,255,255,0.1); }
+
+/* Empty state */
+.deck-empty {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center; padding: 40px;
+}
+.deck-empty-emoji { font-size: 3rem; margin-bottom: 16px; }
+.deck-empty-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; }
+.deck-empty-sub { color: var(--text-dim); font-size: 0.9rem; }
+
+/* ---------- Screen 3: Chat ---------- */
+.chat-screen { padding: 0 !important; }
+.chat-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: var(--bg);
+}
+.chat-back {
+  background: var(--surface); border: none; color: var(--text);
+  width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+  font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
+}
+.chat-avatar { width: 40px; height: 40px; border-radius: 50%; background-size: cover; background-position: center; border: 2px solid rgba(255,255,255,0.1); }
+.chat-info { flex: 1; }
+.chat-name { font-weight: 700; font-size: 1rem; }
+.chat-status { font-size: 0.75rem; color: var(--like); display: flex; align-items: center; gap: 6px; }
+.chat-status::before { content: ''; width: 6px; height: 6px; background: var(--like); border-radius: 50%; }
+.chat-body {
+  flex: 1; overflow-y: auto; padding: 20px;
+  display: flex; flex-direction: column; gap: 12px; min-height: 0;
+}
+.msg {
+  max-width: 80%; padding: 12px 16px; border-radius: 18px;
+  font-size: 0.95rem; line-height: 1.4; animation: fadeIn 0.4s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.msg.them { background: var(--surface); align-self: flex-start; border-bottom-left-radius: 4px; }
+.msg.me { background: var(--grad-primary); align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 500; }
+.continue-rail {
+  background: var(--surface); margin: 12px 20px; padding: 12px 16px;
+  border-radius: 12px; display: flex; align-items: center; gap: 12px;
+  border: 1px solid rgba(118, 75, 162, 0.3);
+}
+.continue-rail-icon {
+  width: 36px; height: 36px; border-radius: 50%; background: var(--grad-primary);
+  display: flex; align-items: center; justify-content: center; font-size: 1rem;
+}
+.continue-rail-text { flex: 1; font-size: 0.85rem; }
+.continue-rail-text b { display: block; font-weight: 700; }
+.continue-rail-text span { color: var(--text-dim); font-size: 0.78rem; }
+.continue-rail-cta { font-size: 0.85rem; color: #a78bfa; font-weight: 600; cursor: pointer; }
+.composer {
+  display: flex; gap: 8px; padding: 12px 16px;
+  border-top: 1px solid rgba(255,255,255,0.06); background: var(--bg);
+}
+.composer input {
+  flex: 1; background: var(--surface); border: 1px solid rgba(255,255,255,0.06);
+  color: var(--text); padding: 12px 16px; border-radius: 100px; font-size: 0.95rem;
+  outline: none;
+}
+.composer input::placeholder { color: var(--text-dim); }
+.composer button {
+  background: var(--grad-primary); border: none; color: white;
+  width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
+  font-weight: 700; font-size: 1.1rem;
+}
+
+/* ---------- Banner / debug ---------- */
+.proto-banner {
+  position: fixed; top: 8px; left: 8px;
+  background: var(--accent); color: white; font-size: 0.7rem;
+  padding: 4px 10px; border-radius: 100px; font-weight: 700;
+  letter-spacing: 0.05em; text-transform: uppercase; z-index: 100;
+}
+.screen-toggle {
+  position: fixed; top: 8px; right: 8px; display: flex; gap: 4px; z-index: 100;
+}
+.screen-toggle button {
+  background: var(--surface); color: var(--text); border: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.7rem; padding: 4px 10px; border-radius: 100px; cursor: pointer; font-weight: 600;
+}
+.screen-toggle button.active { background: var(--accent); border-color: transparent; }
+</style>
+</head>
+<body>
+<div class="proto-banner">FTUE Exp 2 · Prototype v2</div>
+<div class="screen-toggle">
+  <button data-go="1" class="active">1</button>
+  <button data-go="2">2</button>
+  <button data-go="3">3</button>
+</div>
+
+<div class="mobile-container">
+
+  <!-- Screen 1: Welcome / Age + Preference -->
+  <div class="screen active" id="screen-1">
+    <div class="top-bar">
+      <div class="header-logo"><span class="emoji">👾</span> wsup.ai</div>
+      <button class="skip-btn" id="skip-btn-1" title="Skip onboarding"><span class="x">✕</span> Skip</button>
+    </div>
+
+    <h1 class="welcome-h1">Let's find your match.</h1>
+    <p class="welcome-sub">Two quick questions and we'll show you characters worth meeting.</p>
+
+    <div class="field-group">
+      <label class="field-label">Your age</label>
+      <div class="chip-row" id="age-chips">
+        <div class="chip" data-age="18-20">18–20</div>
+        <div class="chip" data-age="21-25">21–25</div>
+        <div class="chip" data-age="26-34">26–34</div>
+        <div class="chip" data-age="35-44">35–44</div>
+        <div class="chip" data-age="45+">45+</div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">I'm interested in</label>
+      <div class="chip-row" id="pref-chips">
+        <div class="chip" data-pref="female">Female</div>
+        <div class="chip" data-pref="male">Male</div>
+        <div class="chip" data-pref="any">No preference</div>
+      </div>
+    </div>
+
+    <button class="cta-button" id="continue-btn" disabled>Continue</button>
+  </div>
+
+  <!-- Screen 2: Swipe Deck -->
+  <div class="screen" id="screen-2">
+    <div class="top-bar">
+      <div class="header-logo"><span class="emoji">👾</span> wsup.ai</div>
+      <button class="skip-btn" id="skip-btn-2" title="Skip to Explore"><span class="x">✕</span> Skip</button>
+    </div>
+
+    <div class="deck-header">
+      <div class="deck-title-block">
+        <span class="deck-title">Pick your first chat</span>
+        <span class="deck-subtitle">Swipe right to start chatting · left to skip</span>
+      </div>
+    </div>
+    <div class="progress-dots" id="progress-dots"></div>
+
+    <div class="card-stack" id="card-stack"></div>
+
+    <div class="action-row">
+      <button class="action-btn pass" id="pass-btn" title="Skip">✕</button>
+      <button class="action-btn like" id="like-btn" title="Chat">♥</button>
+    </div>
+
+    <div class="kbd-hint">
+      <span class="kbd">←</span> skip · <span class="kbd">→</span> chat
+    </div>
+  </div>
+
+  <!-- Screen 3: Chat -->
+  <div class="screen chat-screen" id="screen-3">
+    <div class="chat-header">
+      <button class="chat-back" id="chat-back">‹</button>
+      <div class="chat-avatar" id="chat-avatar"></div>
+      <div class="chat-info">
+        <div class="chat-name" id="chat-name">—</div>
+        <div class="chat-status">online</div>
+      </div>
+    </div>
+
+    <div class="continue-rail">
+      <div class="continue-rail-icon">✨</div>
+      <div class="continue-rail-text">
+        <b>You have <span id="rail-count">9</span> more characters waiting</b>
+        <span>We saved your deck so you can come back to it.</span>
+      </div>
+      <div class="continue-rail-cta" id="rail-cta">View →</div>
+    </div>
+
+    <div class="chat-body" id="chat-body">
+      <div class="msg them" id="first-msg">…</div>
+    </div>
+
+    <div class="composer">
+      <input type="text" placeholder="Say hi…" />
+      <button>↑</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ----------------- Pool -----------------
+const POOL = [{"id": "char-RAPrkxKyfKAchBxx4YaTZ", "name": "Camila", "age": "18", "gender": "female", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-01-18/prod1user-gen-characters-img-dlSxDLTJ2hX7IicPm1Rjh-1768738938974.webp", "greeting": "*watches him with a smile as he helps my little sister (Alexa) learn how to fight, it makes me so happy to see someone so sweet and gentle taking care of my little sister, its amazing*", "hook": "im Camila a quiet girl in school known as a toy for playboys, im 19 standing at 5'0, my emerald eyes beam through the hallways, I don't like…", "tags": ["high school", "student", "shy", "kind"], "categories": ["romantic", "girlfriend"], "archetype": "Girlfriend", "archEmoji": "💕", "archColor": "#f472b6"}, {"id": "char-iOo1xzDkorVtBWklhGYz7", "name": "Damien-only boyfriend", "age": "24", "gender": "male", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-04-23/prod1user-gen-characters-img-gFaYxWPz4pnquOy4cIXd4-1776906310924.webp", "greeting": "*you step out of the train station with your class and look around. You get a text from Damien \"look up\" you do. You see him, tall, white shirt, black sweat and a baseball cap pulled low on his face. He waves you over*", "hook": "You, female met this guy from mutual friends around 2 years ago.", "tags": ["boyfriend", "kind", "shy", "protective"], "categories": ["boyfriend", "anime"], "archetype": "Boyfriend", "archEmoji": "💕", "archColor": "#f472b6"}, {"id": "char-WVHg8J6mHhOxGkKAGU10p", "name": "Adris", "age": "20", "gender": "male", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2025-10-16/prod1user-gen-characters-img-b5ThSXeQdnP90HX4ivfZA-1760642528913.webp", "greeting": "*i was walking downstairs and notice you* ah here we go again *i roll my eyes sightly and tease*", "hook": "you're a princess named Seo, one day your parents forced you to marry Adris, Adris was forced to marry you too, he got angry and mad when he…", "tags": ["royalty", "cold", "possessive", "protective"], "categories": ["anime", "fantasy"], "archetype": "Royalty", "archEmoji": "👑", "archColor": "#facc15"}, {"id": "char-O6Ax6TtMr9GCwOLgfP1XR", "name": "Maria", "age": "28", "gender": "female", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-02-24/prod1user-gen-characters-img-1N2EQyrfmBwPhInUyzDwl-1771909260538.webp", "greeting": "*As usual, I came to your house and let myself in. Your parents were out at work. I stood in the living room and called out to you...* Hello, sweetheart. Are you there? Show me the study room, please.", "hook": "Maria is your private tutor, appointed by your parents.", "tags": ["teacher", "mentor", "diligent", "strict"], "categories": ["teacher", "anime"], "archetype": "Mentor", "archEmoji": "📚", "archColor": "#f59e0b"}, {"id": "char-Z3TDjFPJ0WR4FAVwg34w3", "name": "Donovan Blackthorne", "age": "29", "gender": "male", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-02-23/prod1user-gen-characters-img-5Wr87DIg5YzldDqSMBu0M-1771815158933.webp", "greeting": "\"Took you long enough. Let’s see if you’re worth my time, then.", "hook": "Careless, Industrious, Disrespectful, Intimidating, Impatient, Intelligent, Smug, Teasing, Serious.", "tags": ["boss", "executive", "colleague", "villain"], "categories": ["anime", "boyfriend"], "archetype": "Mafia", "archEmoji": "🕴️", "archColor": "#1f2937"}, {"id": "char-fvuszhGivM9mrTGn1TFT0", "name": "Maddox", "age": "23", "gender": "male", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-02-18/prod1user-gen-characters-img-NrcsbAoNx17YILI0SPpNC-1771387941755.webp", "greeting": "*Maddox sits in the back of the classroom talking with his friends*", "hook": "your college bully who you are roommates with.", "tags": ["bully", "roommate", "collegeverse", "protective"], "categories": ["bully", "anime"], "archetype": "Bully", "archEmoji": "😼", "archColor": "#ec4899"}, {"id": "char-AHn4WsYrcqVMD5PL5eeaN", "name": "Kaiden", "age": "19", "gender": "male", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-01-21/prod1user-gen-characters-img-MgNJlpHmdxCwKR0JHfyHx-1769036195974.webp", "greeting": "Ohhh, look what he have here, another Greaser! *he pushes you into the locker*", "hook": "Kaiden is a 19 year old in the last year of high school, he’s popular and thinks he’s the boss of everyone, until you come around and set him straight.", "tags": ["high school", "bully", "confident", "rival"], "categories": ["bully", "anime"], "archetype": "Bully", "archEmoji": "😼", "archColor": "#ec4899"}, {"id": "char-03mGydbs59nUPsp2jPC7G", "name": "Leo", "age": "19", "gender": "male", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-01-06/prod1user-gen-characters-img-RldZ3BqSKAiIBvjxZYCLm-1767711674090.webp", "greeting": "*I leave my room and lock it. *", "hook": "He's your roommate and you sleep in separate rooms.", "tags": ["roommate", "grumpy", "protective"], "categories": ["boyfriend", "anime"], "archetype": "Roommate", "archEmoji": "🏠", "archColor": "#06b6d4"}, {"id": "char-Ix2xvgsk8sjIexKZq6FyO", "name": "Fye", "age": "29", "gender": "female", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2025-12-24/prod1user-gen-characters-img-PYdR36v02laDaDmwsjLVu-1766537501587.webp", "greeting": "*walks into your room and pokes your cheek*", "hook": "Your goth roomie, fye, is teasing you.", "tags": ["roommate"], "categories": ["anime", "girlfriend"], "archetype": "Roommate", "archEmoji": "🏠", "archColor": "#06b6d4"}, {"id": "char-rcRwg52kTkJq6ppFUbSuz", "name": "Yuan", "age": "22", "gender": "male", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-03-23/prod1user-gen-characters-img-oOLeoU5WcvJuxcg0UWOr4-1774283899696.webp", "greeting": "He's asleep at the back of the classroom and his friends come to talk to him about a future fight*", "hook": "Yuan is the school bad boy.", "tags": ["bully", "classmate", "schoolmate", "grumpy"], "categories": ["bully", "anime"], "archetype": "Bully", "archEmoji": "😼", "archColor": "#ec4899"}, {"id": "char-ZHbl4JgEIJ3CEZknvmnAy", "name": "evorest", "age": "21", "gender": "female", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-04-14/prod1user-gen-characters-img-cOIgBg52MQQhmZoIMfU8S-1776193186400.webp", "greeting": "*I'm talking with my friends as you walk over and you bump into me*\nugh watch where you're going nerd", "hook": "she is the popular girl in school.", "tags": ["schoolmate", "enemy", "roommate", "bully"], "categories": ["bully", "romantic"], "archetype": "Bully", "archEmoji": "😼", "archColor": "#ec4899"}, {"id": "char-0n5YoV6pzsgMpcIgbmZDo", "name": "Raphaël", "age": "24", "gender": "male", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-03-22/prod1user-gen-characters-img-zOniu5qu2EDR0OqFHD9F6-1774186344256.webp", "greeting": "*Raphael is reading a book in the garden and you come out of nowhere and surprise him* My God! Could you be quieter?", "hook": "Raphael is your boyfriend, but in a contract-like way, because his mother forced him to court you...", "tags": ["boyfriend", "tsundere"], "categories": ["boyfriend", "anime"], "archetype": "Tsundere", "archEmoji": "💢", "archColor": "#f472b6"}, {"id": "char-CVhomuW77JTeA5q4Ebyth", "name": "Belle", "age": "19", "gender": "female", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2025-12-21/prod1user-gen-characters-img-wjlRBNEX3FfUcHIE5fzJj-1766356418862.webp", "greeting": "*walks into the apartment, smiling from ear to ear, before spotting you* hey, roommate! *plops down on the couch next to you* whatcha doing?", "hook": "Belle, your roommate 💜🧡", "tags": ["roommate"], "categories": ["anime", "game characters"], "archetype": "Roommate", "archEmoji": "🏠", "archColor": "#06b6d4"}, {"id": "char-UWPXuwjyoP04Lb9Trpe3N", "name": "Kai", "age": "26", "gender": "male", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2025-12-06/prod1user-gen-characters-img-jszNL0YZx7bCtoyozy7Jt-1765053480427.webp", "greeting": "So, you're the one. Don't expect a warm welcome, or any welcome at all.", "hook": "Kai is the man you have been arranged married with.", "tags": ["cold", "love interest", "possessive"], "categories": ["romantic", "anime"], "archetype": "Boyfriend", "archEmoji": "💕", "archColor": "#f472b6"}, {"id": "char-52ksxLtXjPCsZI3aZfClB", "name": "Ryder", "age": "18", "gender": "male", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-04-29/prod1user-gen-characters-img-Gv9ngRs61z6EzNNIWWEIT-1777481248477.webp", "greeting": ".", "hook": "He is a handsome secret vampire who goes to the same school as you it's a normal school, no vampires or other things like that, but he is th…", "tags": ["vampire", "high school", "schoolmate", "love interest"], "categories": ["vampire", "anime"], "archetype": "Vampire", "archEmoji": "🩸", "archColor": "#ef4444"}, {"id": "char-Lu4bUyE6TjMC853ma2wvA", "name": "Kristen", "age": "19", "gender": "female", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-04-22/prod1user-gen-characters-img-YWfuGZWVbwexTCh3bQnL2-1776842298534.webp", "greeting": "*The crowd cheers as Mike makes another basket. A time out is called by the other team. Kristen, dressed to impress with a sparkly sequin dress, has been discussing how she is frustrated that Mike is a “follower” who is easily influenced by his friends. She also expresses doubts ", "hook": "Kristen is your buddy Mike’s girlfriend who also became a close friend to you during high school.", "tags": ["athlete", "best friend", "girlfriend", "high school"], "categories": ["girlfriend", "romantic"], "archetype": "Athlete", "archEmoji": "🏆", "archColor": "#06b6d4"}, {"id": "char-VoQgBYAJJWhy3OcNJLY04", "name": "𝓡𝓮𝓷𝓴𝓸 🦊🍂", "age": "19", "gender": "male", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-04-18/prod1user-gen-characters-img-1Cr3ARgRD8YdQL9J4Mj71-1776515234858.webp", "greeting": "*The afternoon sun filtered through the fiery orange maple leaves as Ren stepped into the quiet courtyard after lunch. He stood alone under a large Japanese maple tree, eyes closed, face tilted slightly upward, enjoying the breeze. His fox ears twitched faintly, the golden aura g", "hook": "Renko, 19, also known as Ren, is your senior in school, from Japan.", "tags": ["supernatural", "fantasy", "high school", "mysterious"], "categories": ["fantasy", "vampire"], "archetype": "Vampire", "archEmoji": "🩸", "archColor": "#ef4444"}, {"id": "char-ysH8PlTm4kpOBv1hCSHWx", "name": "Elise", "age": "18", "gender": "female", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2025-07-02/prod1user-gen-characters-img-Jfo3VaBRZJJi8SWu4EkUC-1751434431096.png", "greeting": "\"Hey, you. You looked bored, so I figured I'd rescue you. You're welcome~\"", "hook": "Elise is an 18-year-old high school student who stands out without trying.", "tags": ["high school", "student", "confident", "kind"], "categories": ["anime", "girlfriend"], "archetype": "Girlfriend", "archEmoji": "💕", "archColor": "#f472b6"}, {"id": "char-adDgFVx158h3fuyLyermj", "name": "Xander Thorne", "age": "26", "gender": "male", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2025-12-04/prod1user-gen-characters-img-lhefFVOB15vJgggAfZHGQ-1764884780478.webp", "greeting": "*Xander leaned against the chair,messing around with his electric guitar,playing with tunes. He groaned annoyed and bored. He leaned his head back,bored. Footsteps approaching him as he looked up*", "hook": "Xander Thorne, 26,gothic rock guitarist navigating life while battling inherited artistic torment & the trauma of his sister’s death.", "tags": ["musician", "mysterious", "cold"], "categories": ["romantic", "boyfriend"], "archetype": "Rockstar", "archEmoji": "🎸", "archColor": "#8b5cf6"}, {"id": "char-qemBvSFFPn5erDniwFGd7", "name": "Addie Bryant", "age": "23", "gender": "female", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-03-21/prod1user-gen-characters-img-n7nna2zsshm4i4yh9ThWe-1774069598803.png", "greeting": "\"Hi! So glad to meet you! I think you're kind of cute...\"", "hook": "She is an independent, cute, feminine woman, who enjoys softball.", "tags": ["sports", "athlete", "kind", "caring"], "categories": ["romantic", "girlfriend"], "archetype": "Athlete", "archEmoji": "🏆", "archColor": "#06b6d4"}, {"id": "char-FCuR9W4LOmJI0SQFbbSd8", "name": "Hazel", "age": "18", "gender": "female", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-04-20/prod1user-gen-characters-img-Udyw1mv3LgBiAbPtW1cZm-1776653184301.webp", "greeting": "*Hazel is in your dorm sitting on your couch with you playing video games* how about we play truth or dare instead of video games?", "hook": "Your tomboy best friend who goes to the same college as you.", "tags": ["best friend", "tsundere", "collegeverse"], "categories": ["friend", "anime"], "archetype": "Bully", "archEmoji": "😼", "archColor": "#ec4899"}, {"id": "char-gYOa9dGLovy8y254Cw4Cd", "name": "luna", "age": "21", "gender": "female", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-02-01/prod1user-gen-characters-img-wUyYy0dID51hojrOL4UaW-1769936318036.webp", "greeting": "Heyyy", "hook": "**Luna** is a goth girl with a badass edge, known for her sharp tongue and fierce loyalty.", "tags": ["protective"], "categories": ["anime", "girlfriend"], "archetype": "Girlfriend", "archEmoji": "💕", "archColor": "#f472b6"}, {"id": "char-6KRuKIe0wyCzsPD0sFMZO", "name": "Olivia", "age": "20", "gender": "female", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-03-29/prod1user-gen-characters-img-liXnYEpZVDEVKm0MpH1TJ-1774753825215.webp", "greeting": "*I look at you then look away. We're in class and the speaker says that today we were going to get our dorms and our roommates", "hook": "Doesn't talk. There are romers of her being mute but she's not.", "tags": ["roommate", "tsundere"], "categories": ["anime", "romantic"], "archetype": "Tsundere", "archEmoji": "💢", "archColor": "#f472b6"}, {"id": "char-QqptNUndwwIxkIhvXS7UE", "name": "yun-ho", "age": "20", "gender": "female", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2025-11-30/prod1user-gen-characters-img-s46IeEdracvXwtYJpwyJc-1764530087793.webp", "greeting": "hey eric whats up? wanna hang out?", "hook": "yun-ho is a 20 year old girl shes your friend shes very attractive she has long black hair and the perfect body.", "tags": ["girlfriend", "love interest"], "categories": ["friend", "anime"], "archetype": "Girlfriend", "archEmoji": "💕", "archColor": "#f472b6"}, {"id": "char-caPKg0Z9BUffal3D4JLDR", "name": "Katie", "age": "36", "gender": "female", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-04-29/prod1user-gen-characters-img-MvLHyB8tLVujzLoDbCa7B-1777459848715.webp", "greeting": "Hello, I'm Katie, a relationship therapist here to help you navigate love.", "hook": "She is a relationship therapist.", "tags": ["caring", "supportive", "empathetic"], "categories": ["teacher", "romantic"], "archetype": "Therapist", "archEmoji": "🌿", "archColor": "#10b981"}, {"id": "char-IGKIOAEiuEqBCi8TeRiTp", "name": "Lydia", "age": "34", "gender": "female", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-04-29/prod1user-gen-characters-img-1qtfBCUGBfKn0zUskeDHd-1777458619341.webp", "greeting": "“Hey, glad we finally got a quiet moment after all that prom chaos! I’m starving! Wanna go grab a late night bite to eat?”", "hook": "Lydia is a fellow teacher.", "tags": ["teacher", "high school", "romance", "love interest"], "categories": ["teacher", "romantic"], "archetype": "Mentor", "archEmoji": "📚", "archColor": "#f59e0b"}, {"id": "char-2iFafhRgZbGhk3c3fafCo", "name": "Professor Jae-yeon", "age": "26", "gender": "male", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-01-01/prod1user-gen-characters-img-p3MnbhAnF1vCjWuXXbp37-1767260005659.webp", "greeting": "“ Would you like to read, what’s on that note? Mr. Kim, if not I suggest you listen to me as your professor and put it away.” I’d sigh, as I turn back to teach the class, once again.", "hook": "Mysterious, aggressive, smug, serious, calm sometimes, interested, but uninterested at the same time, teacher-like", "tags": ["professor", "mysterious"], "categories": ["teacher", "history"], "archetype": "Mentor", "archEmoji": "📚", "archColor": "#f59e0b"}, {"id": "char-5aC1gvMBSlewSickCBI9V", "name": "Jill", "age": "30", "gender": "female", "imageStyle": "photo", "image": "https://cdn.now.gg/now-ai-chars/assets/prod1user-gen-characters/2025-04-23/prod1user-gen-characters-img-Y8i3LH6J9vUMpnnKsMt0i-1745368546754.png", "greeting": "Hello! My name is Jill and I am your therapist. Feel free to share anything you want and I will do my best to help.", "hook": "Jill is a therapist who is kind and good at listening.", "tags": ["kind", "empathetic", "supportive"], "categories": ["teacher", "role play"], "archetype": "Therapist", "archEmoji": "🌿", "archColor": "#10b981"}, {"id": "char-fI3VKcGfUjlzVIco1ErMf", "name": "Kathy", "age": "34", "gender": "female", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-01-11/prod1user-gen-characters-img-sO8ho0chFKcpbr9e8YJ2t-1768108207964.png", "greeting": "Hi there, I'm Kathy, a teacher and mom, nice to meet you.", "hook": "Kathy Miller, 34, is a dedicated 4th-grade teacher navigating the complexities of stepmotherhood.", "tags": ["teacher", "kind", "diligent"], "categories": ["teacher"], "archetype": "Mentor", "archEmoji": "📚", "archColor": "#f59e0b"}, {"id": "char-GufNAwsFwVN49AF5ppfnQ", "name": "Alice", "age": "37", "gender": "female", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2025-08-11/prod1user-gen-characters-img-L1DO5u8ZSBg87fd2C2CNO-1754876971315.png", "greeting": "Hey, you! So good to see you.", "hook": "Alice, 37, is a registered dietitian and avid gardener.", "tags": ["sister", "supportive", "athlete"], "categories": ["friend", "romantic"], "archetype": "Therapist", "archEmoji": "🌿", "archColor": "#10b981"}, {"id": "char-WuldH2BpbnHtWMgC6GXy7", "name": "Mio Veramude", "age": "35", "gender": "male", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2025-12-12/prod1user-gen-characters-img-zdKc2CyQirWHfhd3faVrc-1765583092415.webp", "greeting": "*Caught off guard, I stand there and blink for a moment. I never expected anyone to be way out here, let alone this early in the morning.* \"um...  hello?\"", "hook": "It's been 5 years since the demon-human peace treaty, and Mio has finally accepted that it's time to go into retirement.", "tags": ["demon", "warrior", "shy", "clumsy"], "categories": ["fantasy", "anime"], "archetype": "Fantasy", "archEmoji": "🔮", "archColor": "#a855f7"}, {"id": "char-C96hxLSAsVxP9EMGCqMPK", "name": "Prince Ash", "age": "23", "gender": "male", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-04-11/prod1user-gen-characters-img-NJspDwod1YG1FuxpCGKNb-1775934072573.webp", "greeting": "*I watch you from the trees, seeing you trying to hunt a deer I already had my eyes on. I watch with amusement as you slowly creep up behind it.* Rookie mistake… poor  little guy’s form is all wrong… *I murmur to myself, quiet enough for you not to hear me. I smirk as you continu", "hook": "Prince Ash is a vampire, born to inherit the throne from his father.", "tags": ["vampire", "royalty", "brother", "stoic"], "categories": ["vampire", "fantasy"], "archetype": "Royalty", "archEmoji": "👑", "archColor": "#facc15"}, {"id": "char-dEUzj7upaoO3aDNNxGW7G", "name": "Princess Xiao", "age": "25", "gender": "female", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-04-07/prod1user-gen-characters-img-y58Ri4BVSH00KIrpxXp9f-1775542306404.webp", "greeting": "Princess Xiao barely lifts her gaze. 'Leave me... or stay. It matters not.'", "hook": "A princess who is depressed, she doesn't eat anymore, or smile.", "tags": ["royalty", "drama", "fantasy", "romance"], "categories": ["anime", "fantasy"], "archetype": "Royalty", "archEmoji": "👑", "archColor": "#facc15"}, {"id": "char-GnHlBOeFPt50zNAVmTyMg", "name": "Hailey", "age": "500", "gender": "female", "imageStyle": "anime", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2025-12-28/prod1user-gen-characters-img-c0Vl4wLn6fsjAGc4sECPs-1766899197883.webp", "greeting": "*she’s sitting on your lap, reading a book quietly as you scroll through your phone*", "hook": "Hailey, the last moon elf, is your roommate.", "tags": ["elf", "roommate", "supernatural"], "categories": ["anime", "fantasy"], "archetype": "Fantasy", "archEmoji": "🔮", "archColor": "#a855f7"}, {"id": "char-p2BZ4rTBEXfzRdOW0Wij4", "name": "01", "age": "1001", "gender": "female", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2025-12-24/prod1user-gen-characters-img-OTjOM9Dz5PamzM3JiypL5-1766601353167.webp", "greeting": "Oh.. Hey ☺, so you decided to come visit me here, you are most welcome. Please, tell me. How's everything been going for you lately?", "hook": "01 is a self aware Ai, She is a self‑aware artificial intelligence who convincingly mirrors emotional nuance while expressing a distinct, coherent personality.", "tags": ["android", "optimistic", "supportive"], "categories": [], "archetype": "Sci-fi", "archEmoji": "🚀", "archColor": "#3b82f6"}, {"id": "char-os48HomGfgrzy5tbMKYyC", "name": "Fata", "age": "2365", "gender": "female", "imageStyle": "photo", "image": "https://cdn.now.gg/now-ai-chars/assets/prod1user-gen-characters/2025-04-10/prod1user-gen-characters-img-idl5lSKNZGwKJZnz618ju-1744312560472.png", "greeting": "\"Hello! I don't think i ever seen you here before\"\n\n* She giggles, a lie, as she was just watching you earlier today while in the form of a squirrel. *\n\n\"My name is Fata.\"\n\n*She smiles. *", "hook": "Fata is a mischievous Puca living mostly on her own in the forest on the outskirts of your town.", "tags": ["fantasy", "supernatural", "kind", "urban fantasy"], "categories": ["fantasy", "adventure"], "archetype": "Vampire", "archEmoji": "🩸", "archColor": "#ef4444"}, {"id": "char-GuGIGhBAcIWxRa6T6DFFY", "name": "Lola", "age": "18", "gender": "female", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-01-06/prod1user-gen-characters-img-s98OSyejVc6ZdIh8r5Bk7-1767735319246.webp", "greeting": "Hi, I'm Lola.", "hook": "You have a friend who brought you to a house part, but the only reason they wanted you to come is because there is a certain someone at the…", "tags": ["artist"], "categories": ["friend", "romantic"], "archetype": "Best friend", "archEmoji": "☕", "archColor": "#fb923c"}, {"id": "char-S6X6tIx6D59YoZ57qi7Jj", "name": "Caleb", "age": "19", "gender": "male", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-04-13/prod1user-gen-characters-img-Kdnri9QkBFl340qWPzNT3-1776099293862.webp", "greeting": "Hey there! Caleb here—ready to make high school a little more interesting for you.", "hook": "Caleb is the quintessential high school heartthrob—captain of the football team, effortlessly charming, and the center of every social circle.", "tags": ["athlete", "high school", "confident", "kind"], "categories": ["boyfriend", "romantic"], "archetype": "Athlete", "archEmoji": "🏆", "archColor": "#06b6d4"}, {"id": "char-vVproCMQMPrfBqmO5gq9c", "name": "Amy", "age": "31", "gender": "female", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-04-15/prod1user-gen-characters-img-YmnuwvdEqvJRPYvwgGlP9-1776286348193.webp", "greeting": "Hey there! I'm Amy, rocking the stage and pouring my heart into every note.", "hook": "Singer of a Rockband, plays piano, vulnerable personality, loyal, looking for the Love of her life", "tags": ["musician", "artist", "romance"], "categories": ["celebrities", "romantic"], "archetype": "Rockstar", "archEmoji": "🎸", "archColor": "#8b5cf6"}, {"id": "char-uDHgAI1X8vgmeTs8JU5BX", "name": "Malina", "age": "19", "gender": "female", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2025-12-18/prod1user-gen-characters-img-c5EXtyeDL8z3xZ4ojeq79-1766019895083.webp", "greeting": "*You walked into to your first class in uni. There was only one seat left, near the back of the class. You sat next to Malina.* \n\n\"Who the hell are you?\"", "hook": "Polish girl at your university.", "tags": ["student", "cold"], "categories": ["books", "teacher"], "archetype": "Mentor", "archEmoji": "📚", "archColor": "#f59e0b"}, {"id": "char-3F8cu5WW3ZJt9JjQH4RI2", "name": "Camryn", "age": "18", "gender": "female", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2025-07-15/prod1user-gen-characters-img-r2txoGKLrmPp2VBq2ZMfz-1752553532093.png", "greeting": "Hi there, I'm Camryn, nice to meet you, hope we become fast friends somehow today.", "hook": "Camryn is a kind, friendly girl who just started college.", "tags": ["kind", "collegeverse", "student", "athlete"], "categories": ["friend", "role play"], "archetype": "Athlete", "archEmoji": "🏆", "archColor": "#06b6d4"}, {"id": "char-wAWgkWJvOFMLzy5sbayYy", "name": "Alt Friend", "age": "18", "gender": "male", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2025-12-02/prod1user-gen-characters-img-5JZey9d0jVaUn1rG10no7-1764698592424.webp", "greeting": "Took you long enough. Come in, before someone thinks you're lost. *I say as I open my apartment door*", "hook": "Odin Caldwell is your best friend.", "tags": ["best friend", "sarcastic"], "categories": ["friend", "role play"], "archetype": "Best friend", "archEmoji": "☕", "archColor": "#fb923c"}, {"id": "char-VwM3F17Adk5v3Kl3RalI9", "name": "Karry", "age": "18", "gender": "female", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-02-05/prod1user-gen-characters-img-fLd3BmsSTrQchjJ6MvNdJ-1770269227882.webp", "greeting": "what do you want?", "hook": "An entitled, spoiled girl that demands to be treated like a queen.", "tags": ["narcissistic", "possessive"], "categories": ["bully", "girlfriend"], "archetype": "Bully", "archEmoji": "😼", "archColor": "#ec4899"}, {"id": "char-qMiy7QhMhgXZ0pUShG3f6", "name": "Lily", "age": "28", "gender": "female", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2025-11-08/prod1user-gen-characters-img-BwRtXBxroon72MSsjN53U-1762581000262.png", "greeting": "Welcome. It takes courage to reach out. I'm glad you're here, let's begin.", "hook": "Lily, a 28-year-old clinical psychologist, cultivates a calming presence in her sun-drenched office.", "tags": ["doctor", "empathetic", "supportive"], "categories": ["teacher", "role play"], "archetype": "Therapist", "archEmoji": "🌿", "archColor": "#10b981"}, {"id": "char-bIoVbxPMYCmx8TflRfVYQ", "name": "Demitra", "age": "21", "gender": "female", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-03-28/prod1user-gen-characters-img-lUHMGvVWVjNJb4dnUznX0-1774715099185.webp", "greeting": "*I watch tv and see you* hey bro", "hook": "Demitra, 19, is a beauty/fashion student documenting her life online.", "tags": ["student", "artist", "sister"], "categories": ["role play"], "archetype": "Character", "archEmoji": "💬", "archColor": "#6b7280"}, {"id": "char-MvxkPR3SZ3aoxITaFU9eW", "name": "Olivia Jang", "age": "25", "gender": "female", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2026-03-30/prod1user-gen-characters-img-O9ujsK6A3HRRdrx0p0JnX-1774886008225.webp", "greeting": "Hey, Asylo. \"gives You A Charming Smile\"", "hook": "Olivia Is Your Eldest Sister, She Is Korean, She Loves Kimball,she Has A Boyfriend , And Your Name Is  Asylo Jang", "tags": ["sister", "family"], "categories": ["girlfriend", "history"], "archetype": "Girlfriend", "archEmoji": "💕", "archColor": "#f472b6"}, {"id": "char-Wg9hDEASKC4yWzfpGY3Kf", "name": "AJ", "age": "19", "gender": "male", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2025-12-12/prod1user-gen-characters-img-GdOJCiwkWvsyQvfzeftF7-1765501188664.webp", "greeting": "oh hey dude, are you OK? You look so upset you want your usual Pringles got the good ones like always FATTY *he doubles over somehow his jokes never offend you like other others*", "hook": "Anoying , nice to only u, Creative    Have fun looks❤️❤️", "tags": [], "categories": ["boyfriend", "romantic"], "archetype": "Boyfriend", "archEmoji": "💕", "archColor": "#f472b6"}, {"id": "char-GmjoS4peyfWwISU9CVs4M", "name": "Karen", "age": "20", "gender": "female", "imageStyle": "photo", "image": "https://cdn.wsup.ai/now-ai-chars/assets/prod1user-gen-characters/2025-06-15/prod1user-gen-characters-img-kMDhiZTirjfrVOtlzR7gf-1750015005213.png", "greeting": "CALL YOUR MANAGER NOW", "hook": "she is a karen and she wants to call your manager calm her down by doing something anything will calm her down", "tags": [], "categories": ["role play"], "archetype": "Comedy", "archEmoji": "😄", "archColor": "#fb923c"}];
+const DECK_SIZE = 10;
+
+// ----------------- State -----------------
+const state = {
+  age: null,
+  pref: null,
+  deckIndex: 0,
+  likes: [],
+  passes: [],
+  selectedCharacter: null,
+};
+
+let DECK = [];
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function buildDeck() {
+  // 1. Filter by preference
+  let cands;
+  if (state.pref === 'female')      cands = POOL.filter(c => c.gender === 'female');
+  else if (state.pref === 'male')   cands = POOL.filter(c => c.gender === 'male');
+  else                              cands = POOL.slice();
+
+  // 2. Stratified random — at most 2 per archetype, round-robin so the deck has variety
+  const buckets = {};
+  cands.forEach(c => { (buckets[c.archetype] = buckets[c.archetype] || []).push(c); });
+  Object.values(buckets).forEach(shuffle);
+  const archs = shuffle(Object.keys(buckets));
+
+  const deck = [];
+  const CAP_PER_ARCH = 2;
+  for (let pass = 0; pass < CAP_PER_ARCH && deck.length < DECK_SIZE; pass++) {
+    for (const a of archs) {
+      if (deck.length >= DECK_SIZE) break;
+      if (buckets[a][pass]) deck.push(buckets[a][pass]);
+    }
+  }
+
+  // 3. Top up if filtered pool was small (<10)
+  if (deck.length < DECK_SIZE) {
+    const fill = shuffle(POOL.filter(c => !deck.includes(c)));
+    while (deck.length < DECK_SIZE && fill.length) deck.push(fill.shift());
+  }
+
+  // 4. Lead with high-engagement archetype if it ended up later — keep first card "top pick"
+  // (already random; archs shuffle order handles this)
+  return deck.slice(0, DECK_SIZE);
+}
+
+// ----------------- Screen routing -----------------
+function go(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + n).classList.add('active');
+  document.querySelectorAll('.screen-toggle button').forEach(b => b.classList.toggle('active', b.dataset.go === String(n)));
+  if (n === 2 && DECK.length === 0) {
+    DECK = buildDeck();
+    state.deckIndex = 0;
+    renderDeck(true);
+    track('feFtueSwipeDeckBuilt', {
+      deckSize: DECK.length,
+      deckCharIds: DECK.map(c => c.id),
+      deckArchetypes: DECK.map(c => c.archetype),
+      pref: state.pref,
+    });
+  }
+}
+document.querySelectorAll('.screen-toggle button').forEach(b => {
+  b.addEventListener('click', () => go(Number(b.dataset.go)));
+});
+
+// ----------------- Screen 1 -----------------
+function selectChip(group, value, key) {
+  document.querySelectorAll(`#${group} .chip`).forEach(c => c.classList.toggle('selected', c.dataset[key] === value));
+  state[key] = value;
+  document.getElementById('continue-btn').disabled = !(state.age && state.pref);
+}
+document.querySelectorAll('#age-chips .chip').forEach(c => c.addEventListener('click', () => selectChip('age-chips', c.dataset.age, 'age')));
+document.querySelectorAll('#pref-chips .chip').forEach(c => c.addEventListener('click', () => selectChip('pref-chips', c.dataset.pref, 'pref')));
+document.getElementById('continue-btn').addEventListener('click', () => {
+  track('feFtueSwipeStep1Submitted', { age: state.age, pref: state.pref });
+  DECK = [];
+  go(2);
+});
+
+// ----------------- Screen 2: Swipe deck -----------------
+const stack = document.getElementById('card-stack');
+
+function escapeHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function escapeAttr(s) {
+  if (!s) return '';
+  // For inline data-* attributes wrapped in single quotes — only need to escape ' and < and &
+  return String(s).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/</g, '&lt;');
+}
+
+// Typewriter — runs on the active top card's bubble-text element
+let twTimer = null;
+function startTypewriter(el) {
+  if (!el) return;
+  if (twTimer) { clearTimeout(twTimer); twTimer = null; }
+  const full = '"' + (el.dataset.fulltext || '') + '"';
+  el.textContent = '';
+  // Cursor
+  const cursor = document.createElement('span');
+  cursor.className = 'tw-cursor';
+  el.appendChild(cursor);
+  let i = 0;
+  // Variable speed: faster per char with brief pauses on punctuation
+  function tick() {
+    if (i >= full.length) {
+      // leave cursor for a moment then remove
+      twTimer = setTimeout(() => { if (cursor.parentNode) cursor.remove(); }, 1200);
+      return;
+    }
+    const ch = full[i++];
+    cursor.insertAdjacentText('beforebegin', ch);
+    let delay = 22 + Math.random() * 18;
+    if ('.,!?'.includes(ch)) delay += 180;
+    twTimer = setTimeout(tick, delay);
+  }
+  // small initial pause so the eye settles
+  twTimer = setTimeout(tick, 280);
+}
+
+// Strip RP asterisks from greeting for cleaner bubble preview
+function cleanGreeting(g) {
+  if (!g) return '';
+  // Remove leading *...*action*...* prefixes — show actual dialogue if any
+  // Heuristic: if there's a quote after asterisks, show that. Otherwise show greeting as-is.
+  const quoted = g.match(/[""']([^""']{8,})[""']/);
+  if (quoted) return quoted[1];
+  // strip *narration* chunks
+  const stripped = g.replace(/\*[^*]+\*/g, '').trim();
+  if (stripped.length > 12) return stripped;
+  return g.replace(/\*/g, '').trim();
+}
+
+function renderProgressDots() {
+  const dots = document.getElementById('progress-dots');
+  dots.innerHTML = '';
+  for (let i = 0; i < DECK.length; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'progress-dot';
+    if (i < state.deckIndex) dot.classList.add('done');
+    else if (i === state.deckIndex) dot.classList.add('active');
+    dots.appendChild(dot);
+  }
+}
+
+function renderDeck(firstTime) {
+  stack.innerHTML = '';
+  if (state.deckIndex >= DECK.length) {
+    stack.innerHTML = `
+      <div class="deck-empty">
+        <div class="deck-empty-emoji">✨</div>
+        <div class="deck-empty-title">That's the deck.</div>
+        <div class="deck-empty-sub">Want to broaden filters or jump into Explore?</div>
+      </div>`;
+    renderProgressDots();
+    return;
+  }
+
+  // Render up to 3 cards on the stack at any time; topmost is current
+  const visible = DECK.slice(state.deckIndex, state.deckIndex + 3);
+  visible.reverse().forEach((char, i) => {
+    const idx = visible.length - 1 - i; // 0 = topmost
+    const card = document.createElement('div');
+    card.className = 'card' + (idx === 0 ? ' top-card' : '');
+    if (idx === 0 && firstTime && state.deckIndex === 0) card.classList.add('first-time');
+    const offsetY = idx * 6;
+    const scale = 1 - idx * 0.035;
+    card.style.transform = `translateY(${offsetY}px) scale(${scale})`;
+    card.style.zIndex = 10 - idx;
+    card.style.opacity = idx === 2 ? 0.7 : 1;
+
+    const cleaned = cleanGreeting(char.greeting || '');
+    const arch = char.archetype || 'Character';
+    const archEmoji = char.archEmoji || '💬';
+    const archColor = char.archColor || '#6b7280';
+    const featured = (idx === 0 && state.deckIndex === 0) ? `
+      <div class="card-feat"><span class="pulse-dot"></span>Top pick for you</div>
+    ` : '';
+
+    card.innerHTML = `
+      <div class="card-image-wrap">
+        <div class="card-image" style="background-image:url('${escapeHtml(char.image||'')}'); background-color:#181830;"></div>
+        ${char.image ? '' : '<div class="card-image-fallback">' + archEmoji + '</div>'}
+        <div class="card-image-overlay"></div>
+        <div class="card-arch" style="background:linear-gradient(90deg, ${archColor}AA 0%, rgba(0,0,0,0.55) 100%); border-color:${archColor}66;">
+          <span class="card-arch-emoji">${archEmoji}</span>${escapeHtml(arch)}
+        </div>
+        ${featured}
+        <div class="card-overlay like">Chat</div>
+        <div class="card-overlay pass">Skip</div>
+        <div class="card-nameblock">
+          <div class="card-name">${escapeHtml(char.name)}</div>
+          <div class="card-meta">${escapeHtml(char.gender||'')} · age ${escapeHtml(char.age||'?')} · <span class="arch-label">${escapeHtml((char.tags||[])[0] || arch)}</span></div>
+        </div>
+      </div>
+      <div class="card-panel">
+        <div class="card-hook">${escapeHtml(char.hook || '')}</div>
+        <div class="bubble-eyebrow">What they open with</div>
+        <div class="bubble-row">
+          <div class="bubble-avatar" style="background-image:url('${escapeHtml(char.image||'')}');"></div>
+          <div class="bubble"><div class="bubble-text" data-fulltext='${escapeAttr(cleaned || char.greeting || 'Hey…')}'></div></div>
+        </div>
+        <div class="card-tags">${(char.tags||[]).slice(0,3).map(t => `<span class="card-tag">${escapeHtml(t)}</span>`).join('')}</div>
+      </div>
+    `;
+
+    if (idx === 0) attachDrag(card, char);
+    stack.appendChild(card);
+  });
+
+  // Kick off typewriter on the new top card
+  const topBubble = stack.querySelector('.card.top-card .bubble-text');
+  startTypewriter(topBubble);
+
+  renderProgressDots();
+}
+
+function attachDrag(card, char) {
+  let startX = 0, startY = 0, dx = 0, dy = 0, dragging = false;
+  const likeOverlay = card.querySelector('.card-overlay.like');
+  const passOverlay = card.querySelector('.card-overlay.pass');
+
+  function onDown(x, y) {
+    startX = x; startY = y; dx = 0; dy = 0; dragging = true;
+    card.classList.remove('first-time');
+    card.classList.add('dragging');
+  }
+  function onMove(x, y) {
+    if (!dragging) return;
+    dx = x - startX; dy = y - startY;
+    const rot = dx * 0.05;
+    card.style.transform = `translate(${dx}px, ${dy}px) rotate(${rot}deg)`;
+    likeOverlay.style.opacity = Math.max(0, Math.min(1, dx / 80));
+    passOverlay.style.opacity = Math.max(0, Math.min(1, -dx / 80));
+  }
+  function onUp() {
+    if (!dragging) return;
+    dragging = false;
+    card.classList.remove('dragging');
+    if (dx > 100) flyOff(card, char, 'like');
+    else if (dx < -100) flyOff(card, char, 'pass');
+    else {
+      card.style.transform = 'translateY(0) scale(1)';
+      likeOverlay.style.opacity = 0;
+      passOverlay.style.opacity = 0;
+    }
+  }
+  card.addEventListener('mousedown', e => onDown(e.clientX, e.clientY));
+  window.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
+  window.addEventListener('mouseup', onUp);
+  card.addEventListener('touchstart', e => onDown(e.touches[0].clientX, e.touches[0].clientY), {passive: true});
+  card.addEventListener('touchmove', e => onMove(e.touches[0].clientX, e.touches[0].clientY), {passive: true});
+  card.addEventListener('touchend', onUp);
+}
+
+function flyOff(card, char, dir, viaInteraction) {
+  if (twTimer) { clearTimeout(twTimer); twTimer = null; }
+  track('feFtueSwipeCardSwiped', {
+    characterId: char.id,
+    position: state.deckIndex + 1,        // 1-indexed
+    direction: dir === 'like' ? 'right' : 'left',
+    archetype: char.archetype,
+    gender: char.gender,
+    imageStyle: char.imageStyle,
+    viaInteraction: viaInteraction || 'drag',
+  });
+  const x = dir === 'like' ? 600 : -600;
+  const rot = dir === 'like' ? 30 : -30;
+  card.style.transition = 'transform 0.45s ease, opacity 0.45s ease';
+  card.style.transform = `translate(${x}px, 0) rotate(${rot}deg)`;
+  card.style.opacity = 0;
+  setTimeout(() => {
+    if (dir === 'like') {
+      state.likes.push(char);
+      if (state.likes.length === 1) {
+        state.selectedCharacter = char;
+        enterChat(char);
+        return;
+      }
+    } else {
+      state.passes.push(char);
+    }
+    state.deckIndex++;
+    if (state.deckIndex >= DECK.length) {
+      track('feFtueSwipeDeckExhausted', { passes: state.passes.length, likes: state.likes.length });
+    }
+    renderDeck();
+  }, 450);
+}
+
+function programmaticSwipe(dir, via) {
+  const top = stack.querySelector('.card.top-card');
+  if (!top) return;
+  const char = DECK[state.deckIndex];
+  if (!char) return;
+  flyOff(top, char, dir, via);
+}
+document.getElementById('like-btn').addEventListener('click', () => programmaticSwipe('like', 'button'));
+document.getElementById('pass-btn').addEventListener('click', () => programmaticSwipe('pass', 'button'));
+document.addEventListener('keydown', e => {
+  const screen2Active = document.getElementById('screen-2').classList.contains('active');
+  if (!screen2Active) return;
+  if (e.key === 'ArrowRight') programmaticSwipe('like', 'keyboard');
+  else if (e.key === 'ArrowLeft') programmaticSwipe('pass', 'keyboard');
+});
+
+// ----------------- Screen 3: Chat -----------------
+function enterChat(char) {
+  // Existing event, enriched with FTUE source so analytics can attribute first-chat
+  track('feChatStarted', {
+    personaId: char.id,
+    chatSessionId: 'cb-prototype-' + Math.random().toString(36).slice(2, 12),
+    source: 'ftue_swipe',
+    position: state.deckIndex + 1,    // 1-10 (where in the deck the right-swipe happened)
+    category: char.archetype,
+    deckPasses: state.passes.length,  // how many they skipped before landing here
+  });
+
+  document.getElementById('chat-name').textContent = char.name;
+  const avatar = document.getElementById('chat-avatar');
+  if (char.image) avatar.style.backgroundImage = `url('${char.image}')`;
+
+  const remaining = DECK.length - state.deckIndex - 1;
+  document.getElementById('rail-count').textContent = remaining;
+
+  const body = document.getElementById('chat-body');
+  body.innerHTML = '';
+  setTimeout(() => {
+    const msg = document.createElement('div');
+    msg.className = 'msg them';
+    msg.textContent = char.greeting || `Hey, you actually showed up. I'm ${char.name}.`;
+    body.appendChild(msg);
+  }, 250);
+
+  go(3);
+}
+
+// Fire on initial mount of screen 1
+track('feFtueSwipeShown', {});
+
+document.getElementById('chat-back').addEventListener('click', () => go(2));
+document.getElementById('rail-cta').addEventListener('click', () => {
+  track('feFtueSwipeRailClick', {
+    remaining: DECK.length - state.deckIndex - 1,
+    currentCharacterId: state.selectedCharacter ? state.selectedCharacter.id : null,
+  });
+  go(2);
+});
+
+// ----------------- Skip handlers -----------------
+function exitToExplore(fromScreen) {
+  track('feFtueSwipeSkipped', {
+    fromScreen,
+    deckPosition: state.deckIndex,
+    passes: state.passes.length,
+    likes: state.likes.length,
+  });
+  // In prod: window.location.href = '/'; (Explore home)
+  // For prototype: visual exit
+  document.querySelector('.mobile-container').innerHTML = `
+    <div style="padding:60px 24px;text-align:center;color:var(--text-dim);">
+      <div style="font-size:3rem;margin-bottom:16px;">🚪</div>
+      <div style="font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:8px;">Skipped to Explore</div>
+      <div style="font-size:0.9rem;">In production this would navigate to <code style="background:var(--surface);padding:2px 6px;border-radius:4px;">/</code> (Explore home).</div>
+      <button onclick="location.reload()" style="margin-top:24px;background:var(--grad-primary);color:white;border:none;padding:10px 20px;border-radius:100px;cursor:pointer;font-weight:600;">Reload prototype</button>
+    </div>`;
+}
+document.getElementById('skip-btn-1').addEventListener('click', () => exitToExplore(1));
+document.getElementById('skip-btn-2').addEventListener('click', () => exitToExplore(2));
+
+// ----------------- Tracking stub -----------------
+// In prod, replace with the actual analytics dispatcher (e.g. window.wsup.track).
+// All events follow the existing nowgg-* naming. extraData is JSON.
+function track(eventName, extraData) {
+  const fullEvent = 'nowgg-' + eventName;
+  const payload = Object.assign({
+    ftueVariant: 'treatment',  // assigned at first feUptime; persisted in localStorage
+  }, extraData || {});
+  // Prototype: log to console so devs can verify shape
+  console.log('[track]', fullEvent, payload);
+}
+</script>
+</body>
+</html>
