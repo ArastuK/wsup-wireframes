@@ -24,6 +24,57 @@ Replace the current first-visit demographic modal with a swipe-deck FTUE that as
   - `any` → all 48 candidates
 - **Age:** captured for analytics + post-FTUE personalization. Under-18 block enforced upstream (existing).
 
+## Card data — what's source-of-truth vs derived
+
+Every field on the swipe card maps to either an existing Firestore `CharCharacters` field or a derived display field computed at deck-build time.
+
+### Source-of-truth (Firestore `CharCharacters/{charId}`)
+
+| Card field | Firestore field | Notes |
+|---|---|---|
+| Image | `characterImageUrl` | Always present in our pool (filtered) |
+| Name | `name` | |
+| Age | `age` | String. Some chars use lore ages (e.g. "500"); FE should render verbatim |
+| Gender | `gender` | `"female"`, `"male"`, `"other"` — drives preference filter |
+| Image style | `imageStyle` | `"anime"` or `"photo"` — drives the style badge |
+| Greeting (bubble) | `greetingMsg` | Strip `*action*` chunks for the preview; show full greeting on chat-screen entry |
+| Hook (italic line) | first sentence of `description` | Truncate to ≤140 chars |
+| Tag pills | `tags[]` | Take first 3 |
+
+### Derived (computed by `deriveArchetype(char)` at deck-build time)
+
+The **archetype label** ("Mentor", "Royalty", "Tsundere"…) and its **emoji + color** are NOT in Firestore. They're computed from `tags[]` + `categories[]` + `name` + `description` using a priority-ordered rule list. First rule that matches wins.
+
+```ts
+type Archetype = { label: string; emoji: string; color: string };
+
+const ARCHETYPE_RULES: Array<{ test: (c: Character) => boolean; archetype: Archetype }> = [
+  { test: c => has(c.tags, ['royalty','royalverse']) || /prince|princess/i.test(c.name),    archetype: { label: 'Royalty',     emoji: '👑',  color: '#facc15' }},
+  { test: c => has(c.tags, ['vampire']) || c.categories.includes('vampire'),                archetype: { label: 'Vampire',     emoji: '🩸',  color: '#ef4444' }},
+  { test: c => c.categories.includes('fantasy') || has(c.tags, ['fantasy','magic','elf','demon','fairy','supernatural','wizard','dragon','mage']), archetype: { label: 'Fantasy', emoji: '🔮', color: '#a855f7' }},
+  { test: c => has(c.tags, ['android','robot','sci-fi','scifi','space']),                   archetype: { label: 'Sci-fi',      emoji: '🚀',  color: '#3b82f6' }},
+  { test: c => /therap|psycholog|dietitian|counsel/i.test(c.description + c.background),    archetype: { label: 'Therapist',   emoji: '🌿',  color: '#10b981' }},
+  { test: c => c.categories.includes('teacher') || has(c.tags, ['mentor','professor','teacher']), archetype: { label: 'Mentor', emoji: '📚', color: '#f59e0b' }},
+  { test: c => c.categories.includes('mafia') || has(c.tags, ['boss']),                     archetype: { label: 'Mafia',       emoji: '🕴️', color: '#1f2937' }},
+  { test: c => c.categories.includes('bully') || has(c.tags, ['bully']),                    archetype: { label: 'Bully',       emoji: '😼',  color: '#ec4899' }},
+  { test: c => has(c.tags, ['tsundere','enemies to lovers']),                                archetype: { label: 'Tsundere',    emoji: '💢',  color: '#f472b6' }},
+  { test: c => c.categories.includes('celebrities') || has(c.tags, ['musician']) || /rockband/i.test(c.description), archetype: { label: 'Rockstar', emoji: '🎸', color: '#8b5cf6' }},
+  { test: c => has(c.tags, ['roommate']),                                                    archetype: { label: 'Roommate',    emoji: '🏠',  color: '#06b6d4' }},
+  { test: c => has(c.tags, ['athlete','sports']),                                            archetype: { label: 'Athlete',     emoji: '🏆',  color: '#06b6d4' }},
+  { test: c => has(c.tags, ['supernatural']),                                                archetype: { label: 'Supernatural',emoji: '✨',  color: '#a855f7' }},
+  { test: c => c.categories.includes('boyfriend')  || has(c.tags, ['boyfriend']),            archetype: { label: 'Boyfriend',   emoji: '💕',  color: '#f472b6' }},
+  { test: c => c.categories.includes('girlfriend') || has(c.tags, ['girlfriend']),           archetype: { label: 'Girlfriend',  emoji: '💕',  color: '#f472b6' }},
+  { test: c => has(c.tags, ['best friend']) || c.categories.includes('friend'),              archetype: { label: 'Best friend', emoji: '☕',  color: '#fb923c' }},
+  { test: c => c.categories.includes('romantic'),                                            archetype: { label: 'Romance',     emoji: '💕',  color: '#f472b6' }},
+];
+// Fallback
+const FALLBACK: Archetype = { label: 'Character', emoji: '💬', color: '#6b7280' };
+```
+
+**Why derived not stored:** keeps creators free to tag however they want and lets us tune the FTUE label set without a Firestore migration. Run derivation at deck-build time on FE; archetype is included in `feFtueSwipeCardSwiped.extraData` so analytics can split metrics by archetype without re-deriving.
+
+**Working reference:** the Python derivation that built the prototype is at [`build_final_pool.py`](https://github.com/ArastuK/wsup-wireframes/blob/main/ftue/build_final_pool.py) — port these rules to TS verbatim.
+
 ## Deck composition (10 cards)
 
 Stratified random — **never show 10 of the same archetype**:
