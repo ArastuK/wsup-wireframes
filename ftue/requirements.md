@@ -24,9 +24,9 @@ Replace the current first-visit demographic modal with a swipe-deck FTUE that as
   - `any` → all 48 candidates
 - **Age:** captured for analytics + post-FTUE personalization. Under-18 block enforced upstream (existing).
 
-## Card data — what's source-of-truth vs derived
+## Card data — sources
 
-Every field on the swipe card maps to either an existing Firestore `CharCharacters` field or a derived display field computed at deck-build time.
+Every field on the swipe card maps to either an existing Firestore `CharCharacters` field or a hardcoded value in the pool entry.
 
 ### Source-of-truth (Firestore `CharCharacters/{charId}`)
 
@@ -41,39 +41,62 @@ Every field on the swipe card maps to either an existing Firestore `CharCharacte
 | Hook (italic line) | first sentence of `description` | Truncate to ≤140 chars |
 | Tag pills | `tags[]` | Take first 3 |
 
-### Derived (computed by `deriveArchetype(char)` at deck-build time)
+### v1 hardcoded pool (48 chars)
 
-The **archetype label** ("Mentor", "Royalty", "Tsundere"…) and its **emoji + color** are NOT in Firestore. They're computed from `tags[]` + `categories[]` + `name` + `description` using a priority-ordered rule list. First rule that matches wins.
+For the experiment, archetype label/emoji/color are **baked into each pool entry** — no runtime derivation. Pool ships in `ftuePool.ts`. Full JSON: [`pool.json`](https://github.com/ArastuK/wsup-wireframes/blob/main/ftue/pool.json).
 
-```ts
-type Archetype = { label: string; emoji: string; color: string };
+| ID | Name | Gender | Style | Archetype | Emoji | Color |
+|---|---|---|---|---|---|---|
+| `char-RAPrkxKyfKAchBxx4YaTZ` | Camila | female | photo | Girlfriend | 💕 | #f472b6 |
+| `char-iOo1xzDkorVtBWklhGYz7` | Damien | male | anime | Boyfriend | 💕 | #f472b6 |
+| `char-WVHg8J6mHhOxGkKAGU10p` | Adris | male | anime | Royalty | 👑 | #facc15 |
+| `char-O6Ax6TtMr9GCwOLgfP1XR` | Maria | female | anime | Mentor | 📚 | #f59e0b |
+| `char-Z3TDjFPJ0WR4FAVwg34w3` | Donovan Blackthorne | male | anime | Mafia | 🕴️ | #1f2937 |
+| `char-fvuszhGivM9mrTGn1TFT0` | Maddox | male | anime | Bully | 😼 | #ec4899 |
+| `char-AHn4WsYrcqVMD5PL5eeaN` | Kaiden | male | anime | Bully | 😼 | #ec4899 |
+| `char-03mGydbs59nUPsp2jPC7G` | Leo | male | anime | Roommate | 🏠 | #06b6d4 |
+| `char-Ix2xvgsk8sjIexKZq6FyO` | Fye | female | anime | Roommate | 🏠 | #06b6d4 |
+| `char-rcRwg52kTkJq6ppFUbSuz` | Yuan | male | anime | Bully | 😼 | #ec4899 |
+| `char-ZHbl4JgEIJ3CEZknvmnAy` | evorest | female | anime | Bully | 😼 | #ec4899 |
+| `char-0n5YoV6pzsgMpcIgbmZDo` | Raphaël | male | anime | Tsundere | 💢 | #f472b6 |
+| `char-CVhomuW77JTeA5q4Ebyth` | Belle | female | anime | Roommate | 🏠 | #06b6d4 |
+| `char-UWPXuwjyoP04Lb9Trpe3N` | Kai | male | anime | Boyfriend | 💕 | #f472b6 |
+| `char-52ksxLtXjPCsZI3aZfClB` | Ryder | male | anime | Vampire | 🩸 | #ef4444 |
+| `char-Lu4bUyE6TjMC853ma2wvA` | Kristen | female | photo | Athlete | 🏆 | #06b6d4 |
+| `char-VoQgBYAJJWhy3OcNJLY04` | Renko | male | photo | Vampire | 🩸 | #ef4444 |
+| `char-ysH8PlTm4kpOBv1hCSHWx` | Elise | female | anime | Girlfriend | 💕 | #f472b6 |
+| `char-adDgFVx158h3fuyLyermj` | Xander Thorne | male | photo | Rockstar | 🎸 | #8b5cf6 |
+| `char-qemBvSFFPn5erDniwFGd7` | Addie Bryant | female | photo | Athlete | 🏆 | #06b6d4 |
+| `char-FCuR9W4LOmJI0SQFbbSd8` | Hazel | female | anime | Bully | 😼 | #ec4899 |
+| `char-gYOa9dGLovy8y254Cw4Cd` | luna | female | anime | Girlfriend | 💕 | #f472b6 |
+| `char-6KRuKIe0wyCzsPD0sFMZO` | Olivia | female | anime | Tsundere | 💢 | #f472b6 |
+| `char-QqptNUndwwIxkIhvXS7UE` | yun-ho | female | anime | Girlfriend | 💕 | #f472b6 |
+| `char-caPKg0Z9BUffal3D4JLDR` | Katie | female | photo | Therapist | 🌿 | #10b981 |
+| `char-IGKIOAEiuEqBCi8TeRiTp` | Lydia | female | photo | Mentor | 📚 | #f59e0b |
+| `char-2iFafhRgZbGhk3c3fafCo` | Professor Jae-yeon | male | anime | Mentor | 📚 | #f59e0b |
+| `char-5aC1gvMBSlewSickCBI9V` | Jill | female | photo | Therapist | 🌿 | #10b981 |
+| `char-fI3VKcGfUjlzVIco1ErMf` | Kathy | female | photo | Mentor | 📚 | #f59e0b |
+| `char-GufNAwsFwVN49AF5ppfnQ` | Alice | female | photo | Therapist | 🌿 | #10b981 |
+| `char-WuldH2BpbnHtWMgC6GXy7` | Mio Veramude | male | anime | Fantasy | 🔮 | #a855f7 |
+| `char-C96hxLSAsVxP9EMGCqMPK` | Prince Ash | male | anime | Royalty | 👑 | #facc15 |
+| `char-dEUzj7upaoO3aDNNxGW7G` | Princess Xiao | female | anime | Royalty | 👑 | #facc15 |
+| `char-GnHlBOeFPt50zNAVmTyMg` | Hailey | female | anime | Fantasy | 🔮 | #a855f7 |
+| `char-p2BZ4rTBEXfzRdOW0Wij4` | 01 | female | photo | Sci-fi | 🚀 | #3b82f6 |
+| `char-os48HomGfgrzy5tbMKYyC` | Fata | female | photo | Vampire | 🩸 | #ef4444 |
+| `char-GuGIGhBAcIWxRa6T6DFFY` | Lola | female | photo | Best friend | ☕ | #fb923c |
+| `char-S6X6tIx6D59YoZ57qi7Jj` | Caleb | male | photo | Athlete | 🏆 | #06b6d4 |
+| `char-vVproCMQMPrfBqmO5gq9c` | Amy | female | photo | Rockstar | 🎸 | #8b5cf6 |
+| `char-uDHgAI1X8vgmeTs8JU5BX` | Malina | female | photo | Mentor | 📚 | #f59e0b |
+| `char-3F8cu5WW3ZJt9JjQH4RI2` | Camryn | female | photo | Athlete | 🏆 | #06b6d4 |
+| `char-wAWgkWJvOFMLzy5sbayYy` | Alt Friend (Odin) | male | photo | Best friend | ☕ | #fb923c |
+| `char-VwM3F17Adk5v3Kl3RalI9` | Karry | female | photo | Bully | 😼 | #ec4899 |
+| `char-qMiy7QhMhgXZ0pUShG3f6` | Lily | female | photo | Therapist | 🌿 | #10b981 |
+| `char-bIoVbxPMYCmx8TflRfVYQ` | Demitra | female | photo | Best friend | ☕ | #fb923c |
+| `char-MvxkPR3SZ3aoxITaFU9eW` | Olivia Jang | female | photo | Girlfriend | 💕 | #f472b6 |
+| `char-Wg9hDEASKC4yWzfpGY3Kf` | AJ | male | photo | Boyfriend | 💕 | #f472b6 |
+| `char-GmjoS4peyfWwISU9CVs4M` | Karen | female | photo | Comedy | 😄 | #fb923c |
 
-const ARCHETYPE_RULES: Array<{ test: (c: Character) => boolean; archetype: Archetype }> = [
-  { test: c => has(c.tags, ['royalty','royalverse']) || /prince|princess/i.test(c.name),    archetype: { label: 'Royalty',     emoji: '👑',  color: '#facc15' }},
-  { test: c => has(c.tags, ['vampire']) || c.categories.includes('vampire'),                archetype: { label: 'Vampire',     emoji: '🩸',  color: '#ef4444' }},
-  { test: c => c.categories.includes('fantasy') || has(c.tags, ['fantasy','magic','elf','demon','fairy','supernatural','wizard','dragon','mage']), archetype: { label: 'Fantasy', emoji: '🔮', color: '#a855f7' }},
-  { test: c => has(c.tags, ['android','robot','sci-fi','scifi','space']),                   archetype: { label: 'Sci-fi',      emoji: '🚀',  color: '#3b82f6' }},
-  { test: c => /therap|psycholog|dietitian|counsel/i.test(c.description + c.background),    archetype: { label: 'Therapist',   emoji: '🌿',  color: '#10b981' }},
-  { test: c => c.categories.includes('teacher') || has(c.tags, ['mentor','professor','teacher']), archetype: { label: 'Mentor', emoji: '📚', color: '#f59e0b' }},
-  { test: c => c.categories.includes('mafia') || has(c.tags, ['boss']),                     archetype: { label: 'Mafia',       emoji: '🕴️', color: '#1f2937' }},
-  { test: c => c.categories.includes('bully') || has(c.tags, ['bully']),                    archetype: { label: 'Bully',       emoji: '😼',  color: '#ec4899' }},
-  { test: c => has(c.tags, ['tsundere','enemies to lovers']),                                archetype: { label: 'Tsundere',    emoji: '💢',  color: '#f472b6' }},
-  { test: c => c.categories.includes('celebrities') || has(c.tags, ['musician']) || /rockband/i.test(c.description), archetype: { label: 'Rockstar', emoji: '🎸', color: '#8b5cf6' }},
-  { test: c => has(c.tags, ['roommate']),                                                    archetype: { label: 'Roommate',    emoji: '🏠',  color: '#06b6d4' }},
-  { test: c => has(c.tags, ['athlete','sports']),                                            archetype: { label: 'Athlete',     emoji: '🏆',  color: '#06b6d4' }},
-  { test: c => has(c.tags, ['supernatural']),                                                archetype: { label: 'Supernatural',emoji: '✨',  color: '#a855f7' }},
-  { test: c => c.categories.includes('boyfriend')  || has(c.tags, ['boyfriend']),            archetype: { label: 'Boyfriend',   emoji: '💕',  color: '#f472b6' }},
-  { test: c => c.categories.includes('girlfriend') || has(c.tags, ['girlfriend']),           archetype: { label: 'Girlfriend',  emoji: '💕',  color: '#f472b6' }},
-  { test: c => has(c.tags, ['best friend']) || c.categories.includes('friend'),              archetype: { label: 'Best friend', emoji: '☕',  color: '#fb923c' }},
-  { test: c => c.categories.includes('romantic'),                                            archetype: { label: 'Romance',     emoji: '💕',  color: '#f472b6' }},
-];
-// Fallback
-const FALLBACK: Archetype = { label: 'Character', emoji: '💬', color: '#6b7280' };
-```
-
-**Why derived not stored:** keeps creators free to tag however they want and lets us tune the FTUE label set without a Firestore migration. Run derivation at deck-build time on FE; archetype is included in `feFtueSwipeCardSwiped.extraData` so analytics can split metrics by archetype without re-deriving.
-
-**Working reference:** the Python derivation that built the prototype is at [`build_final_pool.py`](https://github.com/ArastuK/wsup-wireframes/blob/main/ftue/build_final_pool.py) — port these rules to TS verbatim.
+**Pool composition:** 30 female · 18 male · 24 anime · 24 photo · 14 archetypes (Bully ×6, Girlfriend ×7, Mentor ×5, Athlete ×4, Therapist ×4, Boyfriend ×4, Roommate ×4, Royalty ×3, Vampire ×3, Best friend ×3, Tsundere ×2, Rockstar ×2, Fantasy ×2, Sci-fi ×1, Mafia ×1, Comedy ×1).
 
 ## Deck composition (10 cards)
 
